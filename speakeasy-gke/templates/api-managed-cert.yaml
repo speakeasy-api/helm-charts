@@ -1,0 +1,9 @@
+{{ if .Values.registry.ingress.dns }}
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "api-cert" }}
+spec:
+  domains:
+    - {{ .Values.registry.ingress.dns }}
+{{ end }}

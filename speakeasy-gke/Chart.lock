@@ -1,0 +1,9 @@
+dependencies:
+- name: nginx-ingress
+  repository: https://helm.nginx.com/stable
+  version: 0.14.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.6.24
+digest: sha256:be13a46d6d3eb43c86dea315017808457c6299aa10072060f6477e9b84f66ac8
+generated: "2022-08-04T15:26:01.931734-07:00"

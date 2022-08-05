@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "web-cert" }}
+spec:
+  domains:
+    - {{ .Values.registry.web.dns }}
+    - {{ .Values.registry.web.rootDns}}

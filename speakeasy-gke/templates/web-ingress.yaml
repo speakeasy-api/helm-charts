@@ -1,0 +1,33 @@
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "web-ingress" }}
+  annotations:
+    networking.gke.io/managed-certificates: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "web-cert" }}
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.registry.web.staticIp}}
+    networking.gke.io/v1beta1.FrontendConfig : {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "web-fe-config" }}
+  labels:
+    {{- include "speakeasy-registry.labels" . | nindent 4 }}
+spec:
+  rules:
+    - host: {{ .Values.registry.web.dns }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 81
+            path: /*
+            pathType: Prefix
+    - host: {{ .Values.registry.web.rootDns }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 81
+            path: /*
+            pathType: Prefix

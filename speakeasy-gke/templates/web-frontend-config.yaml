@@ -1,0 +1,7 @@
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "web-fe-config" }}
+spec:
+  sslPolicy: {{ .Values.registry.web.sslPolicy}}

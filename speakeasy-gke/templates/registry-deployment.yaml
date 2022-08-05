@@ -1,0 +1,49 @@
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    {{- include "speakeasy-registry.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "speakeasy-registry.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "speakeasy-registry.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: registry
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/registry:{{ .Values.registry.image.tag }}"
+          env:
+            {{- range $v := .Values.registry.envVars }}
+            - name: {{ $v.key}}
+              value: {{ $v.value}}
+            {{- end }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/secrets/service_account.json"
+            - name: SPEAKEASY_ENVIRONMENT
+              value: {{ .Values.env }}
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          volumeMounts:
+          - mountPath: /secrets/
+            name: service-account-credentials
+            readOnly: true
+        - name: web
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.registry.web.image.tag }}"
+          imagePullPolicy: IfNotPresent
+      volumes:
+      - name: service-account-credentials
+        secret:
+          defaultMode: 420
+          secretName: {{ .Values.registry.svcSecret }}

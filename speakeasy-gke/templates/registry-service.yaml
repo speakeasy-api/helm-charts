@@ -1,0 +1,20 @@
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    {{- include "speakeasy-registry.labels" . | nindent 4 }}
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+    - port: 90
+      targetPort: 9090
+      protocol: TCP
+      name: grpc
+  selector:
+    {{- include "speakeasy-registry.selectorLabels" . | nindent 4 }}

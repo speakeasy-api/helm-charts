@@ -1,0 +1,23 @@
+{{ if .Values.registry.ingress.dns }}
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "ingress" }}
+  annotations:
+    networking.gke.io/managed-certificates: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "api-cert" }}
+  labels:
+    {{- include "speakeasy-registry.labels" . | nindent 4 }}
+spec:
+  rules:
+  - host: {{ .Values.registry.ingress.dns }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ $serviceName }}
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+{{ end }}

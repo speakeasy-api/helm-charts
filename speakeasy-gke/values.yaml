@@ -1,0 +1,43 @@
+# Default values for speakeasy-gke.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+env: hosted
+
+nameOverride: ""
+fullnameOverride: ""
+
+registry:
+  envVars:
+    - key: POSTGRES_DSN
+      value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable # can you make this a static ip?
+  image:
+    tag: sha-4348cb18f248092681136bb7abf71e43b041e925 # replace this with more stable tag
+  svcSecret: registry-service-account-secret
+  ingress:
+    dns:
+  web:
+    dns: selfhostspeakeasy.com
+    rootDns: www.selfhostspeakeasy.com
+    staticIp: registry-web-ingress-ip
+    sslPolicy: web-ssl-policy
+    image:
+      tag: sha-82774666214ba4886351a4a224efc2dcdf8a279b
+
+grpc:
+  name: grpc-ingress
+  dns: grpc.selfhostspeakeasy.com
+
+nginx-ingress:
+  controller:
+    config:
+      entries:
+        http2: "true"
+
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "postgres"
+  primary:
+    service:
+      type: LoadBalancer
