@@ -69,3 +69,33 @@ Generate certificates for grpc ingress
 tls.crt: {{ $cert.Cert | b64enc }}
 tls.key: {{ $cert.Key | b64enc }}
 {{- end -}}
+
+{{/*
+Generate certificates for registry ingress
+*/}}
+{{- define "speakeasy-registry.gen-certs" -}}
+{{- $ca := genCA ( printf "%s-%s" ( include "speakeasy-registry.name" . ) "registry" ) 365 -}}
+{{- $cert := genSignedCert .Values.registry.dns nil nil 365 $ca -}}
+tls.crt: {{ $cert.Cert | b64enc }}
+tls.key: {{ $cert.Key | b64enc }}
+{{- end -}}
+
+{{/*
+Generate certificates for web ingress
+*/}}
+{{- define "speakeasy-web.gen-certs" -}}
+{{- $ca := genCA ( printf "%s-%s" ( include "speakeasy-registry.name" . ) "web" ) 365 -}}
+{{- $cert := genSignedCert .Values.web.dns nil nil 365 $ca -}}
+tls.crt: {{ $cert.Cert | b64enc }}
+tls.key: {{ $cert.Key | b64enc }}
+{{- end -}}
+
+{{/*
+Generate certificates for root web ingress
+*/}}
+{{- define "speakeasy-root-web.gen-certs" -}}
+{{- $ca := genCA ( printf "%s-%s" ( include "speakeasy-registry.name" . ) "root-web" ) 365 -}}
+{{- $cert := genSignedCert .Values.web.rootDns nil nil 365 $ca -}}
+tls.crt: {{ $cert.Cert | b64enc }}
+tls.key: {{ $cert.Key | b64enc }}
+{{- end -}}

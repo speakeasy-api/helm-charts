@@ -1,3 +1,4 @@
+{{- if and .Values.grpc.ingress.enabled .Values.grpc.dns -}}
 {{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -22,3 +23,4 @@ spec:
     - hosts:
         - {{ .Values.grpc.dns }}
       secretName: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "grpc-certs" }}
+{{- end}}

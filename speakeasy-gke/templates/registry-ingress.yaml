@@ -1,16 +1,16 @@
-{{ if .Values.registry.ingress.dns }}
+{{- if and .Values.registry.ingress.enabled .Values.registry.dns -}}
 {{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "ingress" }}
   annotations:
-    networking.gke.io/managed-certificates: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "api-cert" }}
+    kubernetes.io/ingress.class: nginx
   labels:
     {{- include "speakeasy-registry.labels" . | nindent 4 }}
 spec:
   rules:
-  - host: {{ .Values.registry.ingress.dns }}
+  - host: {{ .Values.registry.dns }}
     http:
       paths:
       - backend:
@@ -20,4 +20,8 @@ spec:
               number: 80
         path: /
         pathType: Prefix
-{{ end }}
+  tls:
+    - hosts:
+        - {{ .Values.registry.dns }}
+      secretName: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "registry-certs" }}
+{{- end }}

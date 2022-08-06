@@ -40,8 +40,11 @@ spec:
             name: service-account-credentials
             readOnly: true
         - name: web
-          image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.registry.web.image.tag }}"
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.web.image.tag }}"
           imagePullPolicy: IfNotPresent
+          env:
+            - name: SPEAKEASY_ENVIRONMENT
+              value: {{ .Values.env }}
       volumes:
       - name: service-account-credentials
         secret:

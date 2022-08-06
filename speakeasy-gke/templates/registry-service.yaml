@@ -16,5 +16,9 @@ spec:
       targetPort: 9090
       protocol: TCP
       name: grpc
+    - port: 81
+      targetPort: 3000
+      protocol: TCP
+      name: web
   selector:
     {{- include "speakeasy-registry.selectorLabels" . | nindent 4 }}

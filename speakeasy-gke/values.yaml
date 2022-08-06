@@ -2,42 +2,75 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Value of the SPEAKEASY_ENVIRONMENT env var in registry and web containers.
+# Used in config loading, sourcing the right google identity platform api key/auth domain, and setting
+# the appropriate server URL for the web to establish connection with registry.
 env: hosted
 
-nameOverride: ""
+# Overrides all values to set speakeasy-registry.fullname (prefixes most resources names)
 fullnameOverride: ""
 
+# Registry service hosting the Speakeasy API
 registry:
   envVars:
+      # Connection string for a particular data source to store Speakeasy-maintained config and requests
     - key: POSTGRES_DSN
-      value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable # can you make this a static ip?
+      # Use .Values.postgresql.primary.service.loadBalancerIP if specified instead of 127.0.0.1
+      value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
   image:
-    tag: sha-4348cb18f248092681136bb7abf71e43b041e925 # replace this with more stable tag
+    tag: sha-4348cb18f248092681136bb7abf71e43b041e925
+  # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
-    dns:
-  web:
-    dns: selfhostspeakeasy.com
-    rootDns: www.selfhostspeakeasy.com
-    staticIp: registry-web-ingress-ip
-    sslPolicy: web-ssl-policy
-    image:
-      tag: sha-82774666214ba4886351a4a224efc2dcdf8a279b
+    # If true, .Values.registry.dns must also be set.
+    # Deploys an ingress for the registry API if both the above criteria are met
+    enabled: false
+  # Domain name for registry, only used if .Values.registry.ingress.enabled is set to true
+  # dns:
 
+# Web service for Speakeasy
+web:
+  ingress:
+    # If true, .Values.web.dns must also be set.
+    # Deploys an ingress for the web service if both the above criteria are met
+    enabled: true
+  # Domain name for accessing Speakeasy on the web, only used if .Values.web.ingress.enabled is set to true
+  dns: selfhostspeakeasy.com
+  rootDns: www.selfhostspeakeasy.com
+  image:
+    tag: sha-82774666214ba4886351a4a224efc2dcdf8a279b
+
+# gRPC service for Speakeasy responsible for ingesting captured requests
 grpc:
   name: grpc-ingress
+  ingress:
+    # If true, .Values.grpc.dns must also be set.
+    # Deploys an ingress for the gRPC service if both the above criteria are met
+    enabled: true
+  # Domain name for gRPC service which a configured SDK may send requests to, only used if .Values.grpc.ingress.enabled
+  # is set to true
   dns: grpc.selfhostspeakeasy.com
 
+# nginx-ingress controller for directing traffic to Speakeasy web and gRPC services
 nginx-ingress:
   controller:
+    service:
+      # static IP of nginx-ingress controller service
+      # loadBalancerIP:
     config:
       entries:
         http2: "true"
 
+# Postgresql for Speakeasy to store app-specific config and requests from the SDK capture
 postgresql:
+  # If true, postgresql will be deployed with PVs backed by the default StorageClass for the underlying cloud provider
+  # NOTE: For self-hosting, it is recommended this is only set to true for testing. A separate data source outside the
+  # lifecycle of Speakeasy should be maintained following best practices for its usage and maintenance.
   enabled: true
   auth:
     postgresPassword: "postgres"
   primary:
     service:
       type: LoadBalancer
+      # static IP of Postgresql LoadBalancer service
+      # loadBalancerIP:
