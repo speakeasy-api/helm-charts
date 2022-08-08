@@ -1,6 +1,6 @@
 apiVersion: v2
-name: speakeasy-gke
-description: Speakeasy API Platform deployed in GKE.
+name: speakeasy-k8s
+description: Speakeasy API Platform deployed on K8s.
 
 # Application charts are a collection of templates that can be packaged into versioned archives
 # to be deployed.

@@ -12,7 +12,7 @@ registry:
   envVars:
       # Connection string for a particular data source to store Speakeasy-maintained config and requests
     - key: POSTGRES_DSN
-      # Use .Values.postgresql.primary.service.loadBalancerIP if specified instead of 127.0.0.1
+      # Use postgresql.primary.service.loadBalancerIP if specified instead of 127.0.0.1
       value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
   image:
     # TODO peg to stable registry image
@@ -20,21 +20,21 @@ registry:
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
-    # If true, .Values.registry.dns must also be set.
+    # If true, registry.dns must also be set.
     # Deploys an ingress for the registry API if both the above criteria are met
     enabled: false
-  # Domain name for registry, only used if .Values.registry.ingress.enabled is set to true
+  # Domain name for registry, only used if registry.ingress.enabled is set to true
   # dns:
 
 # Web service for Speakeasy
 web:
   ingress:
-    # If true, .Values.web.dns must also be set.
+    # If true, web.dns must also be set.
     # Deploys an ingress for the web service if both the above criteria are met
     enabled: false
-  # Domain name for accessing Speakeasy on the web, only used if .Values.web.ingress.enabled is set to true
+  # Domain name for accessing Speakeasy on the web, only used if web.ingress.enabled is set to true
   # dns: selfhostspeakeasy.com
-  # Typically the same as dns above but prefixes with www, only used if .Values.web.ingress.enabled is set to true
+  # Typically the same as dns above but prefixes with www, only used if web.ingress.enabled is set to true
   # rootDns: www.selfhostspeakeasy.com
   image:
     # TODO peg to stable registry image
@@ -44,16 +44,18 @@ web:
 grpc:
   name: grpc-ingress
   ingress:
-    # If true, .Values.grpc.dns must also be set.
+    # If true, grpc.dns must also be set.
     # Deploys an ingress for the gRPC service if both the above criteria are met
     enabled: false
-  # Domain name for gRPC service which a configured SDK may send requests to, only used if .Values.grpc.ingress.enabled
+  # Domain name for gRPC service which a configured SDK may send requests to, only used if grpc.ingress.enabled
   # is set to true
   # dns: grpc.selfhostspeakeasy.com
 
 # nginx-ingress controller for directing traffic to Speakeasy web and gRPC services
 nginx-ingress:
   # If true, nginx-ingress sub-chart is deployed as the ingress controller.
+  # Should be set to true if any of web.ingress.enabled, registry.ingress.enabled, or grpc.ingress.enabled are set to true.
+  # Current ingress implementation assumes nginx-ingress as the controller, but this may be configurable soon.
   enabled: false
   controller:
     service:
