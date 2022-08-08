@@ -1,2 +1,4 @@
-# charts
-Helm charts used for self-hosting Speakeasy
+# Speakeasy charts
+
+This repository contains the official **Helm 3** charts for installing and configuring
+Speakeasy.

@@ -1,0 +1,26 @@
+{{- if and .Values.grpc.ingress.enabled .Values.grpc.dns -}}
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.org/grpc-services: {{ $serviceName }}
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "grpc-ingress" }}
+spec:
+  rules:
+    - host: {{ .Values.grpc.dns }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 90
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - {{ .Values.grpc.dns }}
+      secretName: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "grpc-certs" }}
+{{- end}}
