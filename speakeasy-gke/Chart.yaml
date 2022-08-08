@@ -21,6 +21,7 @@ dependencies:
   - name: nginx-ingress
     version: ~0.14.0
     repository: https://helm.nginx.com/stable
+    condition: nginx-ingress.enabled
   - name: postgresql
     version: 11.6.24
     repository: https://charts.bitnami.com/bitnami
