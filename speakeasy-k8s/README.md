@@ -126,8 +126,6 @@ cert-manager:
       helm install speakeasy speakeasy-k8s -f <OVERLAY> -n <NAMESPACE> --timeout 5m --wait --wait-for-jobs --debug
       ```
    
-   ### Additional Notes
-
    #### Resource Ordering Constraints
    `cert-manager` installs CRDs to enable certificate provisioning via LetsEncrypt. One such CRD is the `ClusterIssuer` which
    must be installed last, otherwise the CRD will not be present in the K8s API server. However, the `CertificateRequest` will
