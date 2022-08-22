@@ -4,7 +4,7 @@ This repository contains the official **Helm 3** chart for installing and config
 Speakeasy on Kubernetes. For full documentation on deploying Speakeasy on your own
 infrastructure, please see the [Self-Hosting Guide](https://docs.speakeasyapi.dev/speakeasy-user-guide/self-host-speakeasy-coming-soon).
 
-## Prerequisites
+### Prerequisites
 
 * **Helm 3.0**
 * **kubectl**
@@ -14,7 +14,7 @@ infrastructure, please see the [Self-Hosting Guide](https://docs.speakeasyapi.de
       may result in data-loss. For testing purposes however, this chart allows the user to enable
       [Postgres on K8s](https://github.com/bitnami/charts/tree/master/bitnami/postgresql).
 
-## Usage
+### Usage
 
 Usage of this chart is currently requires checking out this repository. <br />
 
@@ -23,6 +23,8 @@ clone this repository and navigate to the `charts directory`:
 
         git clone https://github.com/speakeasy-api/charts.git
         cd charts
+
+### Configuration
 
 Provide an overlay for the changes needed to `values.yaml` by following the sections below.
 
@@ -74,10 +76,11 @@ postgresql:
 cert-manager:
   enabled: true
 ```
+### Installation
 
 The process to install Speakeasy will differ depending on whether the `registry.ingress.enabled` is `true`.
 
-   ### Without Ingress
+   #### Without Ingress
    If _not_ enabling ingress, execute the following commands:
    ```
    helm dependency update speakeasy-k8s
@@ -94,7 +97,7 @@ The process to install Speakeasy will differ depending on whether the `registry.
    ```
    Swap out the `127.0.0.1` under the `value` for `POSTGRES_DSN` with the IP obtained from the previous command.
 
-   ### With Ingress
+   #### With Ingress
 
    If enabling ingress and `cert-manager`, there are strict requirements regarding the ordering of resources. See 
    [Resource Ordering Constraints](#resource-ordering-constraints) for an explanation. In this case, please execute the following steps:
