@@ -19,13 +19,13 @@ infrastructure, please see the [Self-Hosting Guide](https://docs.speakeasyapi.de
 Usage of this chart is currently requires checking out this repository. <br />
 
 `speakeasy-k8s` will soon be packaged in to a Speakeasy helm repo where it may be downloaded. For the time-being, please
-follow the sections below to deploy Speakeasy on K8s:
-1. Clone this repository and navigate to `charts` directory:
+clone this repository and navigate to the `charts directory`:
 
         git clone https://github.com/speakeasy-api/charts.git
         cd charts
 
-2. Provide an overlay for the changes needed to `values.yaml`:
+Provide an overlay for the changes needed to `values.yaml` by following the sections below.
+
   #### Auth
   Follow the [Firebase Setup](https://docs.speakeasyapi.dev/speakeasy-user-guide/self-host-speakeasy-coming-soon/google-cloud-platform#firebase-setup)
   and specify values for `auth.EmailSignInURL`, `auth.GIPAuthDomain`, and `auth.GIPApiKey`.
@@ -73,7 +73,7 @@ cert-manager:
   enabled: true
 ```
 
-3. Install Speakeasy.
+The process to install Speakeasy will differ depending on whether the `registry.ingress.enabled` is `true`.
 
    ### Without Ingress
    If _not_ enabling ingress, execute the following commands:
