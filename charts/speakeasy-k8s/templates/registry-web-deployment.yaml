@@ -1,4 +1,5 @@
 {{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+{{- $serverVersion := (include "speakeasy-registry.server-version" .) -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,7 +26,7 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/secrets/service_account.json"
             - name: SERVER_VERSION
-              value: {{ .Chart.Version }}
+              value: {{ $serverVersion }}
             - name: SPEAKEASY_ENVIRONMENT
               value: {{ .Values.env }}
             - name: SIGN_IN_REDIRECT_URL

@@ -6,6 +6,13 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
+Speakeasy registry server version.
+*/}}
+{{- define "speakeasy-registry.server-version" -}}
+{{- default .Chart.AppVersion .Values.registry.image.tag | trunc 50 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
