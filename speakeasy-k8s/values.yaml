@@ -4,66 +4,77 @@
 # When hosting Speakeasy in your own network, this value should be set to 'hosted'
 env: hosted
 
+# Cloud to deploy Speakeasy in
+cloud: gcp
+
 # Overrides all values to set speakeasy-registry.fullname (prefixes most resources names)
-# fullnameOverride:
+fullnameOverride: ""
 
 # Registry service hosting the Speakeasy API
 registry:
   envVars:
       # Connection string for a particular data source to store Speakeasy-maintained config and requests
     - key: POSTGRES_DSN
-      # Use postgresql.primary.service.loadBalancerIP if specified instead of 127.0.0.1
+      # If specified, use postgresql.primary.service.loadBalancerIP in place of 127.0.0.1
       value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
+      # API Key used to send basic info (e.g. health check with cloud project name) to Speakeasy-managed Posthog instance
+    - key: POSTHOG_API_KEY
+      value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
   image:
-    # TODO peg to stable registry image
-    tag: sha-4348cb18f248092681136bb7abf71e43b041e925
+    # Please override with latest stable version
+    tag: sha-c33c0c2
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
     # If true, registry.dns must also be set.
     # Deploys an ingress for the registry API if both the above criteria are met
     enabled: false
-  # Domain name for registry, only used if registry.ingress.enabled is set to true
-  # dns:
+    # List of domain names for registry api, only used if registry.ingress.enabled is set to true
+    #apiHostnames:
+      #- api.selfhostspeakeasy.com
 
-# Web service for Speakeasy
-web:
-  ingress:
-    # If true, web.dns must also be set.
-    # Deploys an ingress for the web service if both the above criteria are met
-    enabled: false
-  # Domain name for accessing Speakeasy on the web, only used if web.ingress.enabled is set to true
-  # dns: selfhostspeakeasy.com
-  # Typically the same as dns above but prefixes with www, only used if web.ingress.enabled is set to true
-  # rootDns: www.selfhostspeakeasy.com
-  image:
-    # TODO peg to stable registry image
-    tag: sha-82774666214ba4886351a4a224efc2dcdf8a279b
+    # List of domain names for registry web UI, only used if registry.ingress.enabled is set to true
+    #webHostnames:
+      #- www.selfhostspeakeasy.com
+      #- selfhostspeakeasy.com
 
-# gRPC service for Speakeasy responsible for ingesting captured requests
-grpc:
-  name: grpc-ingress
-  ingress:
-    # If true, grpc.dns must also be set.
-    # Deploys an ingress for the gRPC service if both the above criteria are met
-    enabled: false
-  # Domain name for gRPC service which a configured SDK may send requests to, only used if grpc.ingress.enabled
-  # is set to true
-  # dns: grpc.selfhostspeakeasy.com
+    # List of domain names for gRPC service used for request capture
+    #grpcHostnames:
+      #- grpc.selfhostspeakeasy.com
 
-# nginx-ingress controller for directing traffic to Speakeasy web and gRPC services
-nginx-ingress:
-  # If true, nginx-ingress sub-chart is deployed as the ingress controller.
+# Notification Emails for Infrastructure Configuration (e.g. LetsEncrypt)
+# This is the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent to
+# notificationEmail: "anuraag@speakeasyapi.dev"
+cert-manager:
+  enabled: false
+  installCRDs: true
+  podDnsPolicy: None
+  podDnsConfig:
+    nameservers:
+      - 8.8.8.8
+      - 1.1.1.1
+      - 208.67.222.222
+
+# ingress-nginx controller for directing traffic to Speakeasy registry, web, and gRPC services
+# -- [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap)
+ingress-nginx:
+  # If true, ingress-nginx sub-chart is deployed as the ingress controller.
   # Should be set to true if any of web.ingress.enabled, registry.ingress.enabled, or grpc.ingress.enabled are set to true.
   # Current ingress implementation assumes nginx-ingress as the controller, but this may be configurable soon.
   enabled: false
   controller:
     service:
-      # static IP of nginx-ingress controller service
+      # static IP of ingress-nginx controller service
       # loadBalancerIP:
     config:
-      entries:
-        http2: "true"
+      use-forwarded-headers: "true"
+      use-http2: "true"
+
+# Auth required for user management via Google Identity Provider and Firebase
+auth:
+  EmailSignInURL: "https://www.selfhostspeakeasy.com"
+  GIPAuthDomain: "speakeasy-selfhost.firebaseapp.com"
+  GIPApiKey: "AIzaSyCU7B5CTVu_Jk1LnSxKzFw59z8Q_h-gkLY"
 
 # Postgresql for Speakeasy to store app-specific config and requests from the SDK capture
 postgresql:
