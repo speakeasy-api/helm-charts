@@ -30,13 +30,13 @@ Provide an overlay for the changes needed to `values.yaml` by following the sect
   Follow the [Firebase Setup](https://docs.speakeasyapi.dev/speakeasy-user-guide/self-host-speakeasy-coming-soon/google-cloud-platform#firebase-setup)
   and specify values for `auth.EmailSignInURL`, `auth.GIPAuthDomain`, and `auth.GIPApiKey`.
   #### Ingress
-  * If provisioning ingress resources from our chart, set the value for `registry.ingress.enabled` to `true`.
+  If provisioning ingress resources from our chart, set the value for `registry.ingress.enabled` to `true`.
+  Also, set the values for `registry.ingress.apiHostnames`, `registry.ingress.webHostnames`,
+  and `registry.ingress.grpcHostnames` to your specified domain names for Speakeasy's registry API, web, and gRPC services.
 
 [//]: # (Following instruction will be relevant once we provide a method for fixing the IP of ingress-nginx's LoadBalancer service
 or use ExternalDNS)
 [//]: # (  * If provisioning an ingress controller from our chart, set the value for `ingress-nginx.enabled` to `true`.)
-  * If `registry.ingress.enabled` is `true`, set the values for `registry.ingress.apiHostnames`, `registry.ingress.webHostnames`,
-    and `registry.ingress.grpcHostnames` to your specified domain names for Speakeasy's registry API, web, and gRPC services.
 
   #### Postgres
   To enable Postgres on K8s (not recommended), set the value for `postgresql.enabled` to `true`. If using an externally
@@ -51,6 +51,8 @@ The following is a sample overlay file for a configuration requiring ingress to 
 an externally managed Postgres:
 ```
 registry:
+  image:
+    tag: 1.0.0
   envVars:
       - key: POSTGRES_DSN
         value: postgres://postgres:postgres@34.149.47.53:5432/postgres?sslmode=disable
