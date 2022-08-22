@@ -16,13 +16,19 @@ infrastructure, please see the [Self-Hosting Guide](https://docs.speakeasyapi.de
 
 ### Usage
 
-Usage of this chart is currently requires checking out this repository. <br />
+[Helm](https://helm.sh) must be installed to use the charts.  Please refer to
+Helm's [documentation](https://helm.sh/docs) to get started.
 
-`speakeasy-k8s` will soon be packaged in to a Speakeasy helm repo where it may be downloaded. For the time-being, please
-clone this repository and navigate to the `charts directory`:
+Once Helm has been set up correctly, add the repo as follows:
 
-        git clone https://github.com/speakeasy-api/charts.git
-        cd charts
+    helm repo add speakeasy https://speakeasy-api.github.io/helm-charts
+
+If you had already added this repo earlier, run `helm repo update` to retrieve
+the latest versions of the packages. You can then run `helm search repo
+speakeasy` to see the charts.
+
+For specific instructions regarding installation of speakeasy-k8s, please refer to the [Installation](#installation) section
+below.
 
 ### Configuration
 
@@ -82,29 +88,28 @@ The process to install Speakeasy will differ depending on whether the `registry.
 
    #### Without Ingress
    If _not_ enabling ingress, execute the following commands:
-   ```
-   helm dependency update speakeasy-k8s
-   helm install speakeasy speakeasy-k8s -f <OVERLAY> -n <NAMESPACE> --debug
-   ```
+
+    helm install speakeasy speakeasy/speakeasy-k8s -f <OVERLAY> -n <NAMESPACE> --debug
+
    If `postgresql.enabled` is `true`, you will also need to edit the Speakeasy deployment to modify the IP in `POSTGRES_DSN`
    with the external IP of the `LoadBalancer` service. First, get the IP via:
-   ```
-   kubectl get svc -n <NAMESPACE>
-   ```
+
+    kubectl get svc -n <NAMESPACE>
+
    Then, modify the Speakeasy deployment via:
-   ```
-   kubectl edit deploy speakeasy-k8s-service -n <NAMESPACE>
-   ```
+
+    kubectl edit deploy speakeasy-k8s-service -n <NAMESPACE>
+
    Swap out the `127.0.0.1` under the `value` for `POSTGRES_DSN` with the IP obtained from the previous command.
 
    #### With Ingress
 
    If enabling ingress and `cert-manager`, there are strict requirements regarding the ordering of resources. See 
    [Resource Ordering Constraints](#resource-ordering-constraints) for an explanation. In this case, please execute the following steps:
-   1. First, update dependencies:
-   ```
-   helm dependency update speakeasy-k8s
-   ```
+   1. First, pull the chart locally and unpack it:
+       ```
+       helm pull speakeasy/speakeasy-k8s --untar
+       ```
    2. Install `ingress-nginx`:
       ```
       helm install ingress speakeasy-k8s/charts/ingress-nginx-4.0.13.tgz --set controller.config.use-forwarded-headers=true --set controller.config.use-http2=true
@@ -130,6 +135,11 @@ The process to install Speakeasy will differ depending on whether the `registry.
       ```
       helm install speakeasy speakeasy-k8s -f <OVERLAY> -n <NAMESPACE> --timeout 5m --wait --wait-for-jobs --debug
       ```
+After waiting a couple minutes, Speakeasy should now be running successfully in your environment.<br /><br />
+To uninstall the chart:
+
+    helm delete speakeasy -n <NAMESPACE>
+
    
    #### Resource Ordering Constraints
    `cert-manager` installs CRDs to enable certificate provisioning via LetsEncrypt. One such CRD is the `ClusterIssuer` which
