@@ -60,7 +60,7 @@ cert-manager:
 ingress-nginx:
   # If true, ingress-nginx sub-chart is deployed as the ingress controller.
   # Should be set to true if any of web.ingress.enabled, registry.ingress.enabled, or grpc.ingress.enabled are set to true.
-  # Current ingress implementation assumes nginx-ingress as the controller, but this may be configurable soon.
+  # Current ingress implementation assumes ingress-nginx as the controller, but this may be configurable soon.
   enabled: false
   controller:
     service:
