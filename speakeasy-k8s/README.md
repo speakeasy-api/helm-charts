@@ -26,6 +26,9 @@ follow the sections below to deploy Speakeasy on K8s:
         cd charts
 
 2. Provide an overlay for the changes needed to `values.yaml`:
+  #### Auth
+  Follow the [Firebase Setup](https://docs.speakeasyapi.dev/speakeasy-user-guide/self-host-speakeasy-coming-soon/google-cloud-platform#firebase-setup)
+  and specify values for `auth.EmailSignInURL`, `auth.GIPAuthDomain`, and `auth.GIPApiKey`.
   #### Ingress
   * If provisioning ingress resources from our chart, set the value for `registry.ingress.enabled` to `true`.
 
@@ -60,6 +63,10 @@ registry:
       - selfhostspeakeasy.com
     grpcHostnames:
       - grpc.selfhostspeakeasy.com
+auth:
+  EmailSignInURL: "https://www.selfhostspeakeasy.com"
+  GIPAuthDomain: "speakeasy-selfhost.firebaseapp.com"
+  GIPApiKey: "AIbaaefCUa3a3242zUC_YeLeK1aba3_h-KrEB"
 postgresql:
   enabled: false
 cert-manager:
