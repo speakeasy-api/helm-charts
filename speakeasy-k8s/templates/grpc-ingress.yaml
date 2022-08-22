@@ -1,15 +1,27 @@
-{{- if and .Values.grpc.ingress.enabled .Values.grpc.dns -}}
+{{- if and .Values.registry.ingress.enabled .Values.registry.ingress.grpcHostnames -}}
 {{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.org/grpc-services: {{ $serviceName }}
   name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "grpc-ingress" }}
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.org/grpc-services: {{ $serviceName }}
+    cert-manager.io/cluster-issuer: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "letsencrypt" }}
+    acme.cert-manager.io/http01-edit-in-place: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+  labels:
+    {{- include "speakeasy-registry.labels" . | nindent 4 }}
 spec:
+  tls:
+    - hosts:
+        {{- range $v := .Values.registry.ingress.grpcHostnames }}
+        - {{ $v }}
+        {{- end }}
+      secretName: nginx-letsencrypt-grpc
   rules:
-    - host: {{ .Values.grpc.dns }}
+    {{- range $v := .Values.registry.ingress.grpcHostnames }}
+    - host: {{ $v }}
       http:
         paths:
           - backend:
@@ -19,8 +31,5 @@ spec:
                   number: 90
             path: /
             pathType: Prefix
-  tls:
-    - hosts:
-        - {{ .Values.grpc.dns }}
-      secretName: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "grpc-certs" }}
-{{- end}}
+    {{- end }}
+{{- end }}
