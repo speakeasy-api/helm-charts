@@ -13,7 +13,7 @@ fullnameOverride: ""
 # Registry service hosting the Speakeasy API
 registry:
   envVars:
-      # Connection string for a particular data source to store Speakeasy-maintained config and requests
+    # Connection string for a particular data source to store Speakeasy-maintained config and requests
     - key: POSTGRES_DSN
       # If specified, use postgresql.primary.service.loadBalancerIP in place of 127.0.0.1
       value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
@@ -22,7 +22,7 @@ registry:
       value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
   image:
     # Please override with latest stable version
-    tag: sha-c33c0c2
+    tag: sha-0613c07
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
@@ -31,16 +31,16 @@ registry:
     enabled: false
     # List of domain names for registry api, only used if registry.ingress.enabled is set to true
     #apiHostnames:
-      #- api.selfhostspeakeasy.com
+    #- api.selfhostspeakeasy.com
 
     # List of domain names for registry web UI, only used if registry.ingress.enabled is set to true
     #webHostnames:
-      #- www.selfhostspeakeasy.com
-      #- selfhostspeakeasy.com
+    #- www.selfhostspeakeasy.com
+    #- selfhostspeakeasy.com
 
     # List of domain names for gRPC service used for request capture
     #grpcHostnames:
-      #- grpc.selfhostspeakeasy.com
+    #- grpc.selfhostspeakeasy.com
 
 # Notification Emails for Infrastructure Configuration (e.g. LetsEncrypt)
 # This is the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent to
@@ -64,8 +64,8 @@ ingress-nginx:
   enabled: false
   controller:
     service:
-      # static IP of ingress-nginx controller service
-      # loadBalancerIP:
+    # static IP of ingress-nginx controller service
+    # loadBalancerIP:
     config:
       use-forwarded-headers: "true"
       use-http2: "true"

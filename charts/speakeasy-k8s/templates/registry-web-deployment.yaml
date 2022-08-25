@@ -37,6 +37,11 @@ spec:
               value: {{ .Values.auth.GIPAuthDomain }}
             - name: GIP_API_KEY
               value: {{ .Values.auth.GIPApiKey }}
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret-key-secret
+                  key: jwtSecretKey
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
