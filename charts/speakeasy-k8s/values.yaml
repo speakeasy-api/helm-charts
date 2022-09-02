@@ -16,7 +16,7 @@ registry:
     # Connection string for a particular data source to store Speakeasy-maintained config and requests
     - key: POSTGRES_DSN
       # If specified, use postgresql.primary.service.loadBalancerIP in place of 127.0.0.1
-      value: postgres://postgres:postgres@35.233.141.8:5432/postgres?sslmode=disable
+      value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
       # API Key used to send basic info (e.g. health check with cloud project name) to Speakeasy-managed Posthog instance
       # Please do not modify this
     - key: POSTHOG_API_KEY
