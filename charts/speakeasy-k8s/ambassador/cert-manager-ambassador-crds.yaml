@@ -1,0 +1,81 @@
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Listener
+metadata:
+  name: http-listener
+spec:
+  port: 8080
+  protocol: HTTPS  # NOT A TYPO, see below
+  securityModel: XFP
+  hostBinding:
+    namespace:
+      from: ALL
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Listener
+metadata:
+  name: https-listener
+spec:
+  port: 8443
+  protocol: HTTPS
+  securityModel: XFP
+  hostBinding:
+    namespace:
+      from: ALL
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: acme-challenge-mapping
+spec:
+  hostname: "*"
+  rewrite: ""
+  prefix: /.well-known/acme-challenge/
+  service: acme-challenge-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: acme-challenge-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 8089
+  selector:
+    acme.cert-manager.io/http01-solver: "true"
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # Notification email for updates to manage the LetsEncrypt certificate (90 day expiration)
+    email: $YOUR_EMAIL_HERE$
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+        selector: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ambassador-certs
+  # cert-manager will put the resulting Secret in the same Kubernetes
+  # namespace as the Certificate. You should create the certificate in
+  # whichever namespace you want to configure a Host.
+  namespace: default
+spec:
+  secretName: ambassador-certs
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - $WEB_DOMAIN_NAME$
+    - $ROOT_WEB_DOMAIN_NAME$
+    - $API_DOMAIN_NAME$
+    - $GRPC_DOMAIN_NAME$

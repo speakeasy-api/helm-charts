@@ -18,15 +18,16 @@ registry:
       # If specified, use postgresql.primary.service.loadBalancerIP in place of 127.0.0.1
       value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
       # API Key used to send basic info (e.g. health check with cloud project name) to Speakeasy-managed Posthog instance
+      # Please do not modify this
     - key: POSTHOG_API_KEY
       value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
   image:
     # Please override with latest stable version
-    tag: sha-0613c07
+    tag: sha-669a814
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
-    # If true, registry.dns must also be set.
+    # If true, registry.dns must also be set. emissary-ingress.enabled must also be set to false
     # Deploys an ingress for the registry API if both the above criteria are met
     enabled: false
     # List of domain names for registry api, only used if registry.ingress.enabled is set to true
@@ -59,8 +60,8 @@ cert-manager:
 # -- [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap)
 ingress-nginx:
   # If true, ingress-nginx sub-chart is deployed as the ingress controller.
-  # Should be set to true if any of web.ingress.enabled, registry.ingress.enabled, or grpc.ingress.enabled are set to true.
-  # Current ingress implementation assumes ingress-nginx as the controller, but this may be configurable soon.
+  # Should always be false for now, even if registry.ingress.enabled is true due to the current resource ordering constraints
+  # -- [resource ordering constraints](https://docs.speakeasyapi.dev/technical-reference/self-host-speakeasy#resource-ordering-constraints)
   enabled: false
   controller:
     service:
@@ -69,6 +70,13 @@ ingress-nginx:
     config:
       use-forwarded-headers: "true"
       use-http2: "true"
+
+# emissary-ingress controller for directing traffic to Speakeasy registry, web, and gRPC services
+# -- [emissary-ingress documentation](https://www.getambassador.io/docs/emissary/)
+emissary-ingress:
+  # If set to true, ensure registry.ingress.enabled, cert-manager.enabled, and ingress-nginx.enabled are all set to false.
+  # Currently assumes the use of Ambassador mappings (ingress support coming soon)
+  enabled: false
 
 # Auth required for user management via Google Identity Provider and Firebase
 auth:
