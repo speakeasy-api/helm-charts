@@ -131,7 +131,8 @@ The process to install Speakeasy will differ depending on whether ingress, Ambas
    ###### ingress-nginx
 
    If enabling ingress and `cert-manager`, there are strict requirements regarding the ordering of resources. See 
-   [Resource Ordering Constraints](#resource-ordering-constraints) for an explanation. In this case, please execute the following steps:
+   [Resource Ordering Constraints](#resource-ordering-constraints) for an explanation. As a result, please ensure
+   `ingress-nginx.enabled` is set to `false`, and execute the following steps:
    1. First, install `ingress-nginx`:
        ```
       helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx

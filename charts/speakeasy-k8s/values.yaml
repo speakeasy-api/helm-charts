@@ -60,7 +60,8 @@ cert-manager:
 # -- [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap)
 ingress-nginx:
   # If true, ingress-nginx sub-chart is deployed as the ingress controller.
-  # Should be set to true if any of web.ingress.enabled, registry.ingress.enabled, or grpc.ingress.enabled are set to true.
+  # Should always be false for now, even if registry.ingress.enabled is true due to the current resource ordering constraints
+  # -- [resource ordering constraints](https://docs.speakeasyapi.dev/technical-reference/self-host-speakeasy#resource-ordering-constraints)
   enabled: false
   controller:
     service:
