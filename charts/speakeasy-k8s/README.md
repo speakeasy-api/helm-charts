@@ -134,12 +134,12 @@ The process to install Speakeasy will differ depending on whether ingress, Ambas
    [Resource Ordering Constraints](#resource-ordering-constraints) for an explanation. As a result, please ensure
    `ingress-nginx.enabled` is set to `false`, and execute the following steps:
    1. First, install `ingress-nginx`:
-       ```
+      ```
       helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
       helm repo update
       helm install -n <NAMESPACE> ingress ingress-nginx/ingress-nginx --set controller.config.use-forwarded-headers=true \
       --set controller.config.use-http2=true --set fullnameOverride=speakeasy-ingress-nginx
-       ```
+      ```
    2. Get the external IP of the `LoadBalancer` via:
       ```
       kubectl get svc speakeasy-ingress-nginx-controller -o "go-template={{range .status.loadBalancer.ingress}}{{or .ip .hostname}}{{end}}"
