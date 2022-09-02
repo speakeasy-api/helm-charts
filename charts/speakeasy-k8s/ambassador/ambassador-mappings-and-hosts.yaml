@@ -1,0 +1,95 @@
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Host
+metadata:
+  name: speakeasy-api
+spec:
+  hostname: $YOUR_API_HOSTNAME$
+  tlsSecret:
+    name: ambassador-certs
+  requestPolicy:
+    insecure:
+      action: Redirect
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Host
+metadata:
+  name: speakeasy-web
+spec:
+  hostname: $YOUR_WEB_HOSTNAME$
+  tlsSecret:
+    name: ambassador-certs
+  requestPolicy:
+    insecure:
+      action: Redirect
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Host
+metadata:
+  name: speakeasy-root-web
+spec:
+  hostname: $YOUR_ROOT_WEB_HOSTNAME$
+  tlsSecret:
+    name: ambassador-certs
+  requestPolicy:
+    insecure:
+      action: Redirect
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Host
+metadata:
+  name: speakeasy-grpc
+spec:
+  hostname: $YOUR_GRPC_HOSTNAME$
+  tlsSecret:
+    name: ambassador-certs
+  requestPolicy:
+    insecure:
+      action: Redirect
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: speakeasy-api
+spec:
+  hostname: $YOUR_API_HOSTNAME$
+  prefix: /
+  service: speakeasy-service
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: speakeasy-web-api
+spec:
+  hostname: $YOUR_WEB_HOSTNAME$
+  prefix: /v1/
+  rewrite: /v1/
+  service: speakeasy-service
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: speakeasy-web
+spec:
+  hostname: $YOUR_WEB_HOSTNAME$
+  prefix: /
+  service: speakeasy-service:81
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: speakeasy-root-web-api
+spec:
+  hostname: $YOUR_ROOT_WEB_HOSTNAME$
+  prefix: /v1/
+  rewrite: /v1/
+  service: speakeasy-service
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
+  name: speakeasy-root-web
+spec:
+  hostname: $YOUR_ROOT_WEB_HOSTNAME$
+  prefix: /
+  service: speakeasy-service:81
