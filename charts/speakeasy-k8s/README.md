@@ -61,9 +61,14 @@ and `unbounded_requests` tables must exist with the following schema:
 
 **bounded_requests**
 
-[//]: # (insert picture here)
+![](<../../assets/Screen Shot 2022-09-05 at 7.06.25 PM.png>)
 
 **unbounded_requests**
+
+![](<../../assets/Screen Shot 2022-09-05 at 7.06.39 PM.png>)
+
+Currently, the Speakeasy application assumes these tables with the above schemas exist under the specified `BIGQUERY_PROJECT`
+and `BIGQUERY_DATASET`. We will soon add support for automating the creation of these tables in your GCP project if they do not exist.
 
 [//]: # (insert picture here)
 ### Enable HTTPS
