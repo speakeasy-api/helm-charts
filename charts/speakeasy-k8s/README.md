@@ -54,6 +54,31 @@ or use ExternalDNS)
 ### Postgres
 To enable Postgres on K8s (not recommended), set the value for `postgresql.enabled` to `true`. If using an externally
 managed Postgres (recommended), set `postgresql.enabled` to `false` and the value for the `POSTGRES_DSN` environment variable.
+### Bigquery
+To enable Bigquery for request/response storage, set values for `BIGQUERY_PROJECT` and `BIGQUERY_DATASET` under the
+`registry.envVars` block. They should be equivalent to the GCP project ID and Bigquery dataset ID, respectively, under which `bounded_requests`
+and `unbounded_requests` tables must exist with the following schema:
+
+**bounded_requests**
+
+![](<../../assets/Screen Shot 2022-09-05 at 7.06.25 PM.png>)
+
+**unbounded_requests**
+
+![](<../../assets/Screen Shot 2022-09-05 at 7.06.39 PM.png>)
+
+Currently, the Speakeasy application assumes these tables with the above schemas exist under the specified `BIGQUERY_PROJECT`
+and `BIGQUERY_DATASET`. If they do not exist execute the following steps:
+1. Follow the docs to install the `bq` command line tool: https://cloud.google.com/bigquery/docs/bq-command-line-tool#enter-bq-commands-shell
+2. Run the following commands, replacing `<DATASET_ID>` with your dataset:
+   ```
+   bq mk -t <DATASET_ID>.bounded_requests request_id:STRING,workspace_id:STRING,api_id:STRING,version_id:STRING,api_endpoint_id:STRING,api_endpoint_path:STRING,method:STRING,status:INTEGER,request_start_time:TIMESTAMP,response_finish_time:TIMESTAMP,created_at:TIMESTAMP,customer_id:STRING,latency:INTEGER
+   bq mk -t <DATASET_ID>.unbounded_requests request_id:STRING,workspace_id:STRING,har:STRING,har_size_bytes:INTEGER,created_at:TIMESTAMP
+   ```
+      
+
+We will soon add support for automating the creation of these tables in your GCP project and dataset if they do not exist.
+
 ### Enable HTTPS
 If `registry.ingress.enabled` is `true`, set the value for `cert-manager.enabled` to `true` (and `notificationEmail` to receive updates about cert expiry)
 for LetsEncrypt to provide SSL certificates to enable HTTPS.
