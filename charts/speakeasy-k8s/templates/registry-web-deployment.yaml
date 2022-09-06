@@ -23,6 +23,10 @@ spec:
             - name: {{ $v.key}}
               value: {{ $v.value}}
             {{- end }}
+            - name: BIGQUERY_PROJECT
+              value: {{ .Values.bigquery.ProjectID }}
+            - name: BIGQUERY_DATASET
+              value: {{ .Values.bigquery.DatasetID }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/secrets/service_account.json"
             - name: SERVER_VERSION
