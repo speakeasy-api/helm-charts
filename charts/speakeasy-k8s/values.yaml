@@ -17,13 +17,21 @@ registry:
     - key: POSTGRES_DSN
       # If specified, use postgresql.primary.service.loadBalancerIP in place of 127.0.0.1
       value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
+    # GCP project containing Bigquery bounded/unbounded request tables
+    # If this value is specified, these Bigquery tables will store request/response capture data from the configured
+    # SDK instead of Postgres
+    - key: BIGQUERY_PROJECT
+      value: ""
+    # gcloud dataset containing Bigquery bounded/unbounded request tables
+    - key: BIGQUERY_DATASET
+      value: ""
       # API Key used to send basic info (e.g. health check with cloud project name) to Speakeasy-managed Posthog instance
       # Please do not modify this
     - key: POSTHOG_API_KEY
       value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
   image:
     # Please override with latest stable version
-    tag: sha-669a814
+    tag: sha-40a5899
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
