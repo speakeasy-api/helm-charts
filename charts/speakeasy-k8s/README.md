@@ -54,6 +54,18 @@ or use ExternalDNS)
 ### Postgres
 To enable Postgres on K8s (not recommended), set the value for `postgresql.enabled` to `true`. If using an externally
 managed Postgres (recommended), set `postgresql.enabled` to `false` and the value for the `POSTGRES_DSN` environment variable.
+### Bigquery
+To enable Bigquery for request/response storage, set values for `BIGQUERY_PROJECT` and `BIGQUERY_DATASET` under the
+`registry.envVars` block. They should be equivalent to the GCP project ID and dataset ID, respectively, under which `bounded_requests`
+and `unbounded_requests` tables must exist with the following schema:
+
+**bounded_requests**
+
+[//]: # (insert picture here)
+
+**unbounded_requests**
+
+[//]: # (insert picture here)
 ### Enable HTTPS
 If `registry.ingress.enabled` is `true`, set the value for `cert-manager.enabled` to `true` (and `notificationEmail` to receive updates about cert expiry)
 for LetsEncrypt to provide SSL certificates to enable HTTPS.
