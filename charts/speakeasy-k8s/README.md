@@ -79,7 +79,6 @@ and `BIGQUERY_DATASET`. If they do not exist execute the following steps:
 
 We will soon add support for automating the creation of these tables in your GCP project and dataset if they do not exist.
 
-[//]: # (insert picture here)
 ### Enable HTTPS
 If `registry.ingress.enabled` is `true`, set the value for `cert-manager.enabled` to `true` (and `notificationEmail` to receive updates about cert expiry)
 for LetsEncrypt to provide SSL certificates to enable HTTPS.
