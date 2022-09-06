@@ -56,7 +56,7 @@ To enable Postgres on K8s (not recommended), set the value for `postgresql.enabl
 managed Postgres (recommended), set `postgresql.enabled` to `false` and the value for the `POSTGRES_DSN` environment variable.
 ### Bigquery
 To enable Bigquery for request/response storage, set values for `BIGQUERY_PROJECT` and `BIGQUERY_DATASET` under the
-`registry.envVars` block. They should be equivalent to the GCP project ID and dataset ID, respectively, under which `bounded_requests`
+`registry.envVars` block. They should be equivalent to the GCP project ID and Bigquery dataset ID, respectively, under which `bounded_requests`
 and `unbounded_requests` tables must exist with the following schema:
 
 **bounded_requests**
