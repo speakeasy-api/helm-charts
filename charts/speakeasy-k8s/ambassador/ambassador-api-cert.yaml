@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ambassador-api-cert
+  # cert-manager will put the resulting Secret in the same Kubernetes
+  # namespace as the Certificate. You should create the certificate in
+  # whichever namespace you want to configure a Host.
+  namespace: default
+spec:
+  secretName: ambassador-api-cert
+  issuerRef:
+    name: speakeasy-letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - $YOUR_API_HOSTNAME$

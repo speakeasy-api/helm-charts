@@ -6,7 +6,7 @@ metadata:
 spec:
   hostname: $YOUR_API_HOSTNAME$
   tlsSecret:
-    name: ambassador-certs
+    name: ambassador-api-cert
   requestPolicy:
     insecure:
       action: Redirect
@@ -18,7 +18,7 @@ metadata:
 spec:
   hostname: $YOUR_WEB_HOSTNAME$
   tlsSecret:
-    name: ambassador-certs
+    name: ambassador-web-cert
   requestPolicy:
     insecure:
       action: Redirect
@@ -30,7 +30,7 @@ metadata:
 spec:
   hostname: $YOUR_ROOT_WEB_HOSTNAME$
   tlsSecret:
-    name: ambassador-certs
+    name: ambassador-root-web-cert
   requestPolicy:
     insecure:
       action: Redirect
@@ -42,7 +42,7 @@ metadata:
 spec:
   hostname: $YOUR_GRPC_HOSTNAME$
   tlsSecret:
-    name: ambassador-certs
+    name: ambassador-grpc-cert
   requestPolicy:
     insecure:
       action: Redirect
