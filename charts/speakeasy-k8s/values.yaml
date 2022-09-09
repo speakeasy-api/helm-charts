@@ -79,13 +79,6 @@ ingress-nginx:
       use-forwarded-headers: "true"
       use-http2: "true"
 
-# emissary-ingress controller for directing traffic to Speakeasy registry, web, and gRPC services
-# -- [emissary-ingress documentation](https://www.getambassador.io/docs/emissary/)
-emissary-ingress:
-  # If set to true, ensure registry.ingress.enabled, cert-manager.enabled, and ingress-nginx.enabled are all set to false.
-  # Currently assumes the use of Ambassador mappings (ingress support coming soon)
-  enabled: false
-
 # Auth required for user management via Google Identity Provider and Firebase
 auth:
   EmailSignInURL: "https://www.selfhostspeakeasy.com"

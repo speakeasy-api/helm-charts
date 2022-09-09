@@ -2,12 +2,12 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: speakeasy-speakeasy-k8s-letsencrypt
+  name: speakeasy-letsencrypt
   annotations:
     "helm.sh/hook": post-install,post-upgrade
 spec:
   acme:
-    email: anuraag@speakeasyapi.dev
+    email: {{ .Values.notificationEmail }}
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: speakeasy-private-key
