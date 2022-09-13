@@ -42,8 +42,7 @@ If provisioning ingress resources from our chart, set the value for `registry.in
 Also, set the values for `registry.ingress.apiHostnames`, `registry.ingress.webHostnames`,
 and `registry.ingress.grpcHostnames` to your specified domain names for Speakeasy's registry API, web, and gRPC services.
 ### Ambassador
-If using Ambassador mappings, set `emissary-ingress.enabled` to `true` and ensure `registry.ingress.enabled`,
-`cert-manager.enabled`, and `ingress-nginx.enabled` are all `false`.
+If using Ambassador mappings, ensure `registry.ingress.enabled` and `cert-manager.enabled` are both `false`.
 See the [Ambassador Installation](#emissary-ingress) section below for the steps required to use Ambassador for your Speakeasy
 deployment.
 
@@ -151,13 +150,13 @@ For K8s Postgres, get the external IP of the `LoadBalancer` via:
    kubectl get svc -n <NAMESPACE> postgres-postgresql -o "go-template={{range .status.loadBalancer.ingress}}{{or .ip .hostname}}{{end}}"
    ```
 Otherwise, simply get the appropriate IP from your externally managed Postgres. <br /><br />
-In your overlay, modify `POSTGRES_DSN` value to use the IP obtained in the above instructions.
+In your overlay, modify `POSTGRES_DSN` value to use the IP obtained in the above instructions, and continue to follow the below instructions
+for your ingress controller type.
 
 #### ingress-nginx
 
-If enabling ingress and `cert-manager`, there are strict requirements regarding the ordering of resources. See
-[Resource Ordering Constraints](#resource-ordering-constraints) for an explanation. As a result, please ensure
-`ingress-nginx.enabled` is set to `false`, and execute the following steps:
+If enabling `cert-manager`, there are strict requirements regarding the ordering of resources. See
+[Resource Ordering Constraints](#resource-ordering-constraints) for an explanation. As a result, please execute the following steps:
 1. First, install `ingress-nginx`:
    ```
    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -177,7 +176,6 @@ To use Ambassador's `emissary-ingress` controller, please ensure the following v
 
     registry.ingress.enabled
     cert-manager.enabled
-    ingress-nginx.enabled
 Execute the following steps:
 1. First, add CRDs for `emissary-ingress`:
     ```
@@ -213,21 +211,34 @@ Execute the following steps:
    helm install -n <NAMESPACE> cert-manager jetstack/cert-manager -f <OVERLAY>
     ```
 5. `cert-manager` must issue an HTTP-01 challenge to verify domain ownership. We will need to apply CRDs from both `cert-manager`
-   and `emissary-ingress` to enable this. Replace all fields in `./ambassador/cert-manager-ambassador-crds.yaml`
-   surrounded by `$` with specific values. Ensure the values under `spec.dnsNames` are equivalent to the domain names
-   for the A records you issued above.<br/><br/>
+   and `emissary-ingress` to enable this. Replace the "$YOUR_EMAIL_HERE$" in `./ambassador/cert-manager-ambassador-crds.yaml`
+   to the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent.<br/><br/>
    Then, apply the file:
    ```
    kubectl apply -f <path/to/ambassador/cert-manager-ambassador-crds.yaml> --namespace=<NAMESPACE>
    ```
-   It will take a few minutes for the challenge to resolve. You can monitor the status of the certificate by issuing
-   the following command and watching the "READY" column:
+6. Now, we have to provision the certificates for each domain serially. Please see [Single Domain per Certificate Constraint](#single-domain-per-certificate-constraint)
+   for an explanation.
+
+   For all the `ambassador/ambassador-*-cert.yaml` files, ensure the "$" wrapped values in `spec.dnsNames` is replaced with
+   the corresponding domain name for the A record you issued above.
+   
+   It should take no longer than a couple minutes for each challenge to resolve once the certificate is applied. The following is
+   the set of commands used to deploy certificates for Speakeasy's API, gRPC, web, and root web services:
+   ```
+   kubectl apply -f speakeasy-k8s/ambassador/ambassador-root-web-cert.yaml
+   kubectl apply -f speakeasy-k8s/ambassador/ambassador-web-cert.yaml
+   kubectl apply -f speakeasy-k8s/ambassador/ambassador-grpc-cert.yaml
+   kubectl apply -f speakeasy-k8s/ambassador/ambassador-api-cert.yaml
+   ```
+   Between each `kubectl apply` command above, you can monitor the status of each certificate by issuing the following command
+   and watching the "READY" column:
    ```
    kubectl get certificates -n <NAMESPACE> --watch
    ```
-6. Once the challenge from the previous step is resolved, replace all fields in `./ambassador/ambassador-mappings-and-hosts.yaml`
-   surrounded by `$` with specific values. Ensure the values under `spec.hostname` for each resource are equivalent to the
-   domain names for the A records you issued above.<br/><br/>
+7. All challenges from the previous step should now be resolved. In `./ambassador/ambassador-mappings-and-hosts.yaml`, replace
+   all the "$" wrapped values for `spec.hostname`, and ensure they're equivalent to the domain names for the A records you 
+   issued above.<br/><br/>
    Then, apply the file:
    ```
    kubectl apply -f <path/to/ambassador/ambassador-mappings-and-hosts.yaml> --namespace=<NAMESPACE>
@@ -244,8 +255,9 @@ now be able to access the HTTPS endpoint for your web or root web hostname.<br /
 To uninstall the charts:
 
     helm delete speakeasy -n <NAMESPACE>
-    helm delete ingress -n <NAMESPACE>
+    helm delete ingress -n <NAMESPACE> # if using ingress-nginx controller
     helm delete postgres -n <NAMESPACE>
+    helm delete emissary-ingress -n <NAMESPACE> # if using emissary-ingress controller
 
 
 
@@ -256,4 +268,10 @@ issue a status check to the `ClusterIssuer`. When this status check fails, we fo
 and prevent a successful installation. Since this status check proceeds directly upon installation of Speakeasy, we need to ensure
 the `POSTGRES_DSN` is pointing to an already existing Postgres service and A records are created for the `ingress-nginx` controller
 beforehand for a successful Speakeasy installation.
-   
+
+#### Single Domain per Certificate Constraint
+`cert-manager` will provision a pod per domain to issue the HTTP-01 challenge. Since we have a single service routing traffic, each
+pod will receive a challenge request in round-robin fashion. Since the challenge domain usually doesn't match the expected domain for
+a particular pod, it may take up to a few hours for the challenges to resolve unless the certificates are provisioned serially per domain
+name.
+
