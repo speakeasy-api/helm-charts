@@ -23,11 +23,11 @@ registry:
       value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
   image:
     # Please override with latest stable version
-    tag: sha-40a5899
+    tag: sha-506a23c
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
-    # If true, registry.dns must also be set. emissary-ingress.enabled must also be set to false
+    # If true, *Hostnames values below must also be set.
     # Deploys an ingress for the registry API if both the above criteria are met
     enabled: false
     # List of domain names for registry api, only used if registry.ingress.enabled is set to true
@@ -64,26 +64,11 @@ bigquery:
   # gcloud dataset containing Bigquery bounded/unbounded request tables
   DatasetID: ""
 
-# ingress-nginx controller for directing traffic to Speakeasy registry, web, and gRPC services
-# -- [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap)
-ingress-nginx:
-  # If true, ingress-nginx sub-chart is deployed as the ingress controller.
-  # Should always be false for now, even if registry.ingress.enabled is true due to the current resource ordering constraints
-  # -- [resource ordering constraints](https://docs.speakeasyapi.dev/technical-reference/self-host-speakeasy#resource-ordering-constraints)
-  enabled: false
-  controller:
-    service:
-    # static IP of ingress-nginx controller service
-    # loadBalancerIP:
-    config:
-      use-forwarded-headers: "true"
-      use-http2: "true"
-
 # Auth required for user management via Google Identity Provider and Firebase
 auth:
-  EmailSignInURL: "https://www.selfhostspeakeasy.com"
-  GIPAuthDomain: "speakeasy-selfhost.firebaseapp.com"
-  GIPApiKey: "AIzaSyCU7B5CTVu_Jk1LnSxKzFw59z8Q_h-gkLY"
+  #EmailSignInURL: "https://www.selfhostspeakeasy.com"
+  #GIPAuthDomain: "speakeasy-selfhost.firebaseapp.com"
+  #GIPApiKey: "*****************"
 
 # Postgresql for Speakeasy to store app-specific config and requests from the SDK capture
 postgresql:
