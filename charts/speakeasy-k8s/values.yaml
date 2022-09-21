@@ -23,7 +23,7 @@ registry:
       value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
   image:
     # Please override with latest stable version
-    tag: sha-506a23c
+    tag: sha-5f05b12
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
@@ -64,11 +64,17 @@ bigquery:
   # gcloud dataset containing Bigquery bounded/unbounded request tables
   DatasetID: ""
 
-# Auth required for user management via Google Identity Provider and Firebase
+# Auth required for user management. All values in this block are examples that should be replaced.
 auth:
-  #EmailSignInURL: "https://www.selfhostspeakeasy.com"
-  #GIPAuthDomain: "speakeasy-selfhost.firebaseapp.com"
-  #GIPApiKey: "*****************"
+  # The full URL to the Speakeasy homepage the user will be redirected to upon signing in
+  SignInURL: "https://www.selfhostspeakeasy.com"
+  # Client ID of the Github Oauth app
+  GithubClientId: "b0234253z345c"
+  # Client secret of the Github Oauth app
+  GithubClientSecret: "*****************"
+  # The callback URL
+  GithubCallbackURL: "https://api.selfhostspeakeasy.com/v1/auth/callback/github"
+
 
 # Postgresql for Speakeasy to store app-specific config and requests from the SDK capture
 postgresql:
