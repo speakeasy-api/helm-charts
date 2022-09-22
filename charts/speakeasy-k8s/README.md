@@ -38,7 +38,7 @@ Provide an overlay for the changes needed to `values.yaml` by following the sect
 Speakeasy uses Github OAuth to provide authentication for your org. Under settings for the Github Organization you'd like to
 authenticate, click "Developer Settings" > "Oauth Apps" > "New Oauth App". Fill in the fields (example in screenshot below). Please
 ensure the "Authorization callback URL" has a value in the form of `https://<DOMAIN>/v1/auth/callback/github`, where `<DOMAIN>`
-is replaced by the domain name of the Web service's A record (added in the [Ingress Section](#with-ingress) below).
+is replaced by the domain name of the A record (added in the [Ingress Section](#with-ingress) below).
 
 ![](<../../assets/Screen Shot 2022-09-22 at 1.11.33 AM.png>)
 
@@ -200,8 +200,8 @@ Execute the following steps:
    ```
    kubectl get svc -n <NAMESPACE> emissary-ingress -o "go-template={{range .status.loadBalancer.ingress}}{{or .ip .hostname}}{{end}}"
    ```
-   Then, create A records on your DNS to point your desired domains for Speakeasy's API, gRPC, web, and root web
-   services to this IP. For example domain names, refer to the sample overlay in the end of the [Configuration](#configuration) section above.
+   Then, create an A record on your DNS to point your desired domain for Speakeasy to this IP. For example domain names, refer to
+   the sample overlay in the end of the [Configuration](#configuration) section above.
 4. Install `cert-manager` with the following overlay:
     ```
    installCRDs: true
@@ -225,27 +225,22 @@ Execute the following steps:
    ```
    kubectl apply -f <path/to/ambassador/cert-manager-ambassador-crds.yaml> --namespace=<NAMESPACE>
    ```
-6. Now, we have to provision the certificates for each domain serially. Please see [Single Domain per Certificate Constraint](#single-domain-per-certificate-constraint)
-   for an explanation.
+6. Now, we have to provision the certificate for our Speakeasy domain.
 
-   For all the `ambassador/ambassador-*-cert.yaml` files, ensure the "$" wrapped values in `spec.dnsNames` are replaced with
-   the corresponding domain names for the A records you issued above.
+   In `ambassador/ambassador-web-cert.yaml`, ensure the "$" wrapped value in `spec.dnsNames` is replaced with the corresponding
+   domain name for the A record you issued above.
    
-   It should take no longer than a couple minutes for each challenge to resolve once the certificate is applied. The following is
-   the set of commands used to deploy certificates for Speakeasy's API, gRPC, web, and root web services:
+   Then deploy the certificate:
    ```
-   kubectl apply -f speakeasy-k8s/ambassador/ambassador-root-web-cert.yaml
-   kubectl apply -f speakeasy-k8s/ambassador/ambassador-web-cert.yaml
-   kubectl apply -f speakeasy-k8s/ambassador/ambassador-grpc-cert.yaml
-   kubectl apply -f speakeasy-k8s/ambassador/ambassador-api-cert.yaml
+   kubectl apply -f speakeasy-k8s/ambassador/ambassador-web-cert.yaml --namespace <NAMESPACE>
    ```
-   Between each `kubectl apply` command above, you can monitor the status of each certificate by issuing the following command
+   You may monitor the status of the certificate by issuing the following command
    and watching the "READY" column:
    ```
    kubectl get certificates -n <NAMESPACE> --watch
    ```
-7. All challenges from the previous step should now be resolved. In `./ambassador/ambassador-mappings-and-hosts.yaml`, replace
-   all the "$" wrapped values for `spec.hostname`, and ensure they're equivalent to the domain names for the A records you 
+7. The certificate from the previous step should now be ready. In `./ambassador/ambassador-mappings-and-hosts.yaml`, replace
+   all the "$" wrapped values for `spec.hostname`, and ensure they're equivalent to the domain name for the A record you 
    issued above.<br/><br/>
    Then, apply the file:
    ```
@@ -277,9 +272,4 @@ and prevent a successful installation. Since this status check proceeds directly
 the `POSTGRES_DSN` is pointing to an already existing Postgres service and A records are created for the `ingress-nginx` controller
 beforehand for a successful Speakeasy installation.
 
-#### Single Domain per Certificate Constraint
-`cert-manager` will provision a pod per domain to issue the HTTP-01 challenge. Since we have a single service routing traffic, each
-pod will receive a challenge request in round-robin fashion. Since the challenge domain usually doesn't match the expected domain for
-a particular pod, it may take up to a few hours for the challenges to resolve unless the certificates are provisioned serially per domain
-name.
 
