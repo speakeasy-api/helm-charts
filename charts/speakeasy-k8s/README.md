@@ -37,13 +37,13 @@ Provide an overlay for the changes needed to `values.yaml` by following the sect
 ### Auth
 Speakeasy uses Github OAuth to provide authentication for your org. Under settings for the Github Organization you'd like to
 authenticate, click "Developer Settings" > "Oauth Apps" > "New Oauth App". Fill in the fields (example in screenshot below). Please
-ensure the "Authorization callback URL" has a value in the form of "https://<DOMAIN>/v1/auth/callback/github", where <DOMAIN>
+ensure the "Authorization callback URL" has a value in the form of `https://<DOMAIN>/v1/auth/callback/github`, where `<DOMAIN>`
 is replaced by the domain name of the Web service's A record (added in the [Ingress Section](#with-ingress) below).
 
 ![](<../../assets/Screen Shot 2022-09-22 at 1.11.33 AM.png>)
 
 You will also need to specify values for `auth.SignInURL`, `auth.GithubClientId`, `auth.GithubClientSecret`, and `auth.GithubCallbackURL`
-in your overlay to be equivalent to the above populated values. `auth.SignInURL` should just be "https://<DOMAIN>". 
+in your overlay to be equivalent to the above populated values. `auth.SignInURL` should just be `https://<DOMAIN>` (see [example overlay](#speakeasy-version)).
 ### Ingress
 If provisioning ingress resources from our chart, set the value for `registry.ingress.enabled` to `true`.
 Also, set the values for `registry.ingress.apiHostnames`, `registry.ingress.webHostnames`,
@@ -113,9 +113,10 @@ registry:
     grpcHostnames:
       - grpc.selfhostspeakeasy.com
 auth:
-  EmailSignInURL: "https://www.selfhostspeakeasy.com"
-  GIPAuthDomain: "speakeasy-selfhost.firebaseapp.com"
-  GIPApiKey: "AIbaaefCUa3a3242zUC_YeLeK1aba3_h-KrEB"
+  SignInURL: https://speakeasyplatform.com
+  GithubClientId: b0234253z345c
+  GithubClientSecret: *****************
+  GithubCallbackURL: https://speakeasyplatform.com/v1/auth/callback/github
 postgresql:
   enabled: false
 cert-manager:
