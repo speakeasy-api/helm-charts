@@ -18,7 +18,7 @@ registry:
   #     value: EXAMPLE_ENV_VAR_VALUE
   image:
     # Please override with latest stable version
-    tag: sha-8f0c537
+    tag: sha-cb9c1a5
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
