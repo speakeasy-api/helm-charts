@@ -35,8 +35,15 @@ below.
 Provide an overlay for the changes needed to `values.yaml` by following the sections below.
 
 ### Auth
-Follow the [Firebase Setup](https://docs.speakeasyapi.dev/speakeasy-user-guide/self-host-speakeasy-coming-soon/google-cloud-platform#firebase-setup)
-and specify values for `auth.EmailSignInURL`, `auth.GIPAuthDomain`, and `auth.GIPApiKey`.
+Speakeasy uses Github OAuth to provide authentication for your org. Under settings for the Github Organization you'd like to
+authenticate, click "Developer Settings" > "Oauth Apps" > "New Oauth App". Fill in the fields (example in screenshot below). Please
+ensure the "Authorization callback URL" has a value in the form of "https://<DOMAIN>/v1/auth/callback/github", where <DOMAIN>
+is replaced by the domain name of the Web service's A record (added in the [Ingress Section](#with-ingress) below).
+
+![](<../../assets/Screen Shot 2022-09-22 at 1.11.33 AM.png>)
+
+You will also need to specify values for `auth.SignInURL`, `auth.GithubClientId`, `auth.GithubClientSecret`, and `auth.GithubCallbackURL`
+in your overlay to be equivalent to the above populated values. `auth.SignInURL` should just be "https://<DOMAIN>". 
 ### Ingress
 If provisioning ingress resources from our chart, set the value for `registry.ingress.enabled` to `true`.
 Also, set the values for `registry.ingress.apiHostnames`, `registry.ingress.webHostnames`,
@@ -220,8 +227,8 @@ Execute the following steps:
 6. Now, we have to provision the certificates for each domain serially. Please see [Single Domain per Certificate Constraint](#single-domain-per-certificate-constraint)
    for an explanation.
 
-   For all the `ambassador/ambassador-*-cert.yaml` files, ensure the "$" wrapped values in `spec.dnsNames` is replaced with
-   the corresponding domain name for the A record you issued above.
+   For all the `ambassador/ambassador-*-cert.yaml` files, ensure the "$" wrapped values in `spec.dnsNames` are replaced with
+   the corresponding domain names for the A records you issued above.
    
    It should take no longer than a couple minutes for each challenge to resolve once the certificate is applied. The following is
    the set of commands used to deploy certificates for Speakeasy's API, gRPC, web, and root web services:
