@@ -12,17 +12,10 @@ fullnameOverride: ""
 
 # Registry service hosting the Speakeasy API
 registry:
-  envVars:
-    # Connection string for a particular data source to store Speakeasy-maintained config and requests
-    - key: POSTGRES_DSN
-      # If specified, use postgresql.primary.service.loadBalancerIP in place of 127.0.0.1
-      value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
-    # API Key used to send user events (e.g. health check, cloud project name) to Speakeasy-managed Posthog instance. Please do not modify
-    - key: POSTHOG_API_KEY
-      value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
-    # Endpoint of Speakeasy-managed Posthog instance used to collect user events (e.g. health check, cloud project name). Please do not modify
-    - key: POSTHOG_ENDPOINT
-      value: https://metrics.speakeasyapi.dev
+  # Environment variables to expose in the Speakeasy deployment
+  # envVars:
+  #   - key: EXAMPLE_ENV_VAR_KEY
+  #     value: EXAMPLE_ENV_VAR_VALUE
   image:
     # Please override with latest stable version
     tag: sha-8f0c537
@@ -84,6 +77,8 @@ postgresql:
   # NOTE: For self-hosting, it is recommended this is only set to true for testing. A separate data source outside the
   # lifecycle of Speakeasy should be maintained following best practices for its usage and maintenance.
   enabled: false
+  # Connection string for a particular data source to store Speakeasy-maintained config and requests
+  DSN: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
   auth:
     postgresPassword: "postgres"
   primary:

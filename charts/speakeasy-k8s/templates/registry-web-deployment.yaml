@@ -29,6 +29,12 @@ spec:
               value: {{ .Values.bigquery.DatasetID }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/secrets/service_account.json"
+            - name: POSTGRES_DSN
+              value: {{ .Values.postgresql.DSN }}
+            - name: POSTHOG_API_KEY
+              value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
+            - name: POSTHOG_ENDPOINT
+              value: https://metrics.speakeasyapi.dev
             - name: SERVER_VERSION
               value: {{ $serverVersion }}
             - name: SPEAKEASY_ENVIRONMENT
