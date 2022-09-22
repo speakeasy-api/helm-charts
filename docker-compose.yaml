@@ -5,7 +5,11 @@ services:
     environment:
       - SPEAKEASY_ENVIRONMENT=docker
       - POSTGRES_DSN=postgres://postgres:postgres@postgres:5432/registry?sslmode=disable
-      - JWT_SECRET_KEY=sometestsecretkey
+      - JWT_SECRET_KEY=1234567890123456789012345678901234567890123456789012345678901234
+      - GITHUB_CLIENT_ID=06c3bdd366b91fcf92cb
+      - GITHUB_CLIENT_SECRET=REPLACE_THIS_VALUE
+      - GITHUB_CALLBACK_URL=http://localhost:8080/v1/auth/callback/github
+      - SIGN_IN_URL=http://localhost:3000
     volumes:
       - ~/.config/:/root/.config
     ports:
