@@ -17,13 +17,15 @@ registry:
     - key: POSTGRES_DSN
       # If specified, use postgresql.primary.service.loadBalancerIP in place of 127.0.0.1
       value: postgres://postgres:postgres@127.0.0.1:5432/postgres?sslmode=disable
-    # API Key used to send basic info (e.g. health check with cloud project name) to Speakeasy-managed Posthog instance
-    # Please do not modify this
+    # API Key used to send user events (e.g. health check, cloud project name) to Speakeasy-managed Posthog instance. Please do not modify
     - key: POSTHOG_API_KEY
       value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
+    # Endpoint of Speakeasy-managed Posthog instance used to collect user events (e.g. health check, cloud project name). Please do not modify
+    - key: POSTHOG_ENDPOINT
+      value: https://metrics.speakeasyapi.dev
   image:
     # Please override with latest stable version
-    tag: sha-5f05b12
+    tag: sha-8f0c537
   # Secret containing the service account key file for the registry
   svcSecret: registry-service-account-secret
   ingress:
