@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ambassador-grpc-cert
+spec:
+  secretName: ambassador-grpc-cert
+  issuerRef:
+    name: speakeasy-letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - $YOUR_GRPC_HOSTNAME$ 
