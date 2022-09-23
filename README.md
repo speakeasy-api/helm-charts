@@ -4,6 +4,6 @@ This repository contains the official **Helm 3** charts for installing and confi
 
 ## Running Locally
 
-The `docker-compose.yaml` and scripts folder contains everything needed to try out a local installation of speakeasy.
+The `docker-compose.yaml` and scripts folder contains everything needed to try out speakeasy.
 
-Please start at our [running locally documentation](https://docs.speakeasyapi.dev/technical-reference/self-host-speakeasy/running-locally)
+Please start at our [local-execution documentation](https://docs.speakeasyapi.dev/technical-reference/self-host-speakeasy/running-locally)
