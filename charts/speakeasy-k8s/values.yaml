@@ -38,6 +38,12 @@ registry:
     #grpcHostnames:
     #- grpc.selfhostspeakeasy.com
 
+  # cloudsql connection string to be used by cloudproxy
+  cloudsql:
+    enabled: false
+  # connectionString needs to be set if cloudsql.enabled = true
+  # connectionString: "-instances=<INSTANCE_CONNECTION_NAME>=tcp:<DB_PORT>"
+
 # Notification Emails for Infrastructure Configuration (e.g. LetsEncrypt)
 # This is the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent to
 # notificationEmail: "anuraag@speakeasyapi.dev"

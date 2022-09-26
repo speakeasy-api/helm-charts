@@ -73,6 +73,23 @@ spec:
         - name: web
           image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
+        {{- if .Values.registry.cloudsql.enabled }}
+        - name: cloud-sql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.28.0 # make sure to use the latest version
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/cloud_sql_proxy"
+            - "-log_debug_stdout"
+            - "{{ .Values.registry.sql.connectionString }}"
+            - "-credential_file=/secrets/service_account.json"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 2
+          volumeMounts:
+          - mountPath: /secrets/
+            name: service-account-credentials
+            readOnly: true
+        {{- end }}
       volumes:
       - name: service-account-credentials
         secret:
