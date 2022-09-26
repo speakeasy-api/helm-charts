@@ -27,3 +27,7 @@ dependencies:
     version: 1.6.1
     repository: https://charts.jetstack.io
     condition: cert-manager.enabled
+  - name: datadog
+    version: ~2.36.9
+    repository: https://helm.datadoghq.com
+    condition: datadog.enabled

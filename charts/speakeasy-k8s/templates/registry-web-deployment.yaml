@@ -6,6 +6,9 @@ metadata:
   name: {{ $serviceName }}
   labels:
     {{- include "speakeasy-registry.labels" . | nindent 4 }}
+    {{- if .Values.datadog.enabled }}
+    {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -14,6 +17,9 @@ spec:
     metadata:
       labels:
         {{- include "speakeasy-registry.selectorLabels" . | nindent 8 }}
+        {{- if .Values.datadog.enabled }}
+        {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: registry
@@ -57,6 +63,23 @@ spec:
                 secretKeyRef:
                   name: jwt-secret-key-secret
                   key: jwtSecretKey
+            {{- if .Values.datadog.enabled }}
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+            {{- end }}
           imagePullPolicy: Always
           livenessProbe:
             httpGet:

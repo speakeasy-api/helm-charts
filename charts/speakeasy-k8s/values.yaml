@@ -92,3 +92,13 @@ postgresql:
       type: LoadBalancer
       # static IP of Postgresql LoadBalancer service
       # loadBalancerIP:
+      
+datadog:
+  #if true, speakeasy will be monitored using datadog
+  enabled: false
+  datadog:
+   site: datadoghq.com
+   apiKey: "***********"
+   logs:
+     enabled: true
+     containerCollectAll: true
