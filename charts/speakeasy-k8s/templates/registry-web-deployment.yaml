@@ -108,7 +108,7 @@ spec:
           command:
             - "/cloud_sql_proxy"
             - "-log_debug_stdout"
-            - "{{ .Values.registry.sql.connectionString }}"
+            - "{{ .Values.registry.cloudsql.connectionString }}"
             - "-credential_file=/secrets/service_account.json"
           securityContext:
             allowPrivilegeEscalation: false
