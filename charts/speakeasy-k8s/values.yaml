@@ -92,7 +92,14 @@ postgresql:
       type: LoadBalancer
       # static IP of Postgresql LoadBalancer service
       # loadBalancerIP:
-      
+
+# -- [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap)
+ingress-nginx:
+  controller:
+      config:
+        use-forwarded-headers: "true"
+        use-http2: "true"
+
 datadog:
   #if true, speakeasy will be monitored using datadog
   enabled: false
