@@ -6,7 +6,7 @@ metadata:
   name: {{ $serviceName }}
   labels:
     {{- include "speakeasy-registry.labels" . | nindent 4 }}
-    {{- if .Values.datadog.enabled }}
+    {{- if .Values.datadog.datadog.enabled }}
     {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
     {{- end }}
 spec:
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         {{- include "speakeasy-registry.selectorLabels" . | nindent 8 }}
-        {{- if .Values.datadog.enabled }}
+        {{- if .Values.datadog.datadog.enabled }}
         {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 8 }}
         {{- end }}
     spec:
@@ -68,7 +68,7 @@ spec:
                 secretKeyRef:
                   name: jwt-secret-key-secret
                   key: jwtSecretKey
-            {{- if .Values.datadog.enabled }}
+            {{- if .Values.datadog.datadog.enabled }}
             - name: DD_ENV
               valueFrom:
                 fieldRef:

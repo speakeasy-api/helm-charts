@@ -53,7 +53,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Datadog labels
 */}}
 {{- define "speakeasy-registry.datadog-labels" -}}
-{{- if .Values.datadog.enabled }}
+{{- if .Values.datadog.datadog.enabled }}
 tags.datadoghq.com/env: {{ .env }}
 tags.datadoghq.com/service: {{ .service }}
 tags.datadoghq.com/version: {{ .version }}
