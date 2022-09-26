@@ -44,6 +44,9 @@ registry:
   # connectionString needs to be set if cloudsql.enabled = true
   # connectionString: "-instances=<INSTANCE_CONNECTION_NAME>=tcp:<DB_PORT>"
 
+  # used by managed speakeasy to send invites to the platform. No need to set this value for selfhosted speakeasy
+  # sendGridKey: "**********"
+
 # Notification Emails for Infrastructure Configuration (e.g. LetsEncrypt)
 # This is the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent to
 # notificationEmail: "anuraag@speakeasyapi.dev"
