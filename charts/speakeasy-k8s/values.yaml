@@ -79,7 +79,6 @@ auth:
   # The callback URL
   GithubCallbackURL: "https://api.selfhostspeakeasy.com/v1/auth/callback/github"
 
-
 # Postgresql for Speakeasy to store app-specific config and requests from the SDK capture
 postgresql:
   # If true, postgresql will be deployed with PVs backed by the default StorageClass for the underlying cloud provider
