@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   registry:
-    image: gcr.io/linen-analyst-344721/speakeasy-api/registry:release-1.1.0
+    image: gcr.io/linen-analyst-344721/speakeasy-api/registry:release-1.2.0
     environment:
       - SPEAKEASY_ENVIRONMENT=docker
       - POSTGRES_DSN=postgres://postgres:postgres@postgres:5432/registry?sslmode=disable
@@ -16,13 +16,21 @@ services:
     networks:
       - speakeasy_charts_network
   web:
-    image: gcr.io/linen-analyst-344721/speakeasy-api/web:release-1.1.0
+    image: gcr.io/linen-analyst-344721/speakeasy-api/web:release-1.2.0
     networks:
       - speakeasy_charts_network
     volumes:
       - ~/.config/:/root/.config
     ports:
       - "3000:3000"
+  embed-fixture:
+    image: gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:release-1.2.0
+    networks:
+      - speakeasy_charts_network
+    volumes:
+      - ~/.config/:/root/.config
+    ports:
+      - "3001:3001"
   postgres:
     image: postgres:alpine
     restart: always

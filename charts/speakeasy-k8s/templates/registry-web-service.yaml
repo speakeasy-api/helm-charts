@@ -20,5 +20,9 @@ spec:
       targetPort: 3000
       protocol: TCP
       name: web
+    - port: 82
+      targetPort: 3001
+      protocol: TCP
+      name: web
   selector:
     {{- include "speakeasy-registry.selectorLabels" . | nindent 4 }}
