@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ambassador-embed-fixture-cert
+spec:
+  secretName: ambassador-embed-fixture-cert
+  issuerRef:
+    name: speakeasy-letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - $YOUR_EMBED_FIXTURE_HOSTNAME$
