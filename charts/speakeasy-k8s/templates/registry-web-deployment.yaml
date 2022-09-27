@@ -73,6 +73,9 @@ spec:
         - name: web
           image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
+        - name: web
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:{{ .Values.registry.image.tag }}"
+          imagePullPolicy: Always
       volumes:
       - name: service-account-credentials
         secret:

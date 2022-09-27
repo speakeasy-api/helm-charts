@@ -20,6 +20,9 @@ spec:
         {{- range $v := .Values.registry.ingress.webHostnames }}
         - {{ $v }}
         {{- end }}
+        {{- range $v := .Values.registry.ingress.embedFixtureHostnames }}
+        - {{ $v }}
+        {{- end }}
       secretName: nginx-letsencrypt-registry
   rules:
     {{- range $v := .Values.registry.ingress.webHostnames }}

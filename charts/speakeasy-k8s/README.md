@@ -227,12 +227,13 @@ Execute the following steps:
    ```
 6. Now, we have to provision a certificate for each of our Speakeasy domains.
 
-   In `ambassador/ambassador-web-cert.yaml` and `ambassador/ambassador-grpc-cert.yaml`, ensure the "$" wrapped value in `spec.dnsNames` is replaced with the corresponding
+   In `ambassador/ambassador-web-cert.yaml`, `ambassador/ambassador-embed-fixture-cert.yaml`, and `ambassador/ambassador-grpc-cert.yaml`, ensure the "$" wrapped value in `spec.dnsNames` is replaced with the corresponding
    domain name for the A record you issued above.
    
    Then deploy each certificate:
    ```
    kubectl apply -f speakeasy-k8s/ambassador/ambassador-web-cert.yaml --namespace <NAMESPACE>
+   kubectl apply -f speakeasy-k8s/ambassador/ambassador-embed-fixture-cert.yaml --namespace <NAMESPACE>
    kubectl apply -f speakeasy-k8s/ambassador/ambassador-grpc-cert.yaml --namespace <NAMESPACE>
    ```
    You may monitor the status of each certificate by issuing the following command

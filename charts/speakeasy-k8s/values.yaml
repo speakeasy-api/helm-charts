@@ -34,6 +34,11 @@ registry:
     #- www.selfhostspeakeasy.com
     #- selfhostspeakeasy.com
 
+    # List of domain names for registry embed-fixture UI, only used if registry.ingress.enabled is set to true
+    #embedFixtureHostnames:
+    #- embed.www.selfhostspeakeasy.com
+    #- embed.selfhostspeakeasy.com
+
     # List of domain names for gRPC service used for request capture
     #grpcHostnames:
     #- grpc.selfhostspeakeasy.com

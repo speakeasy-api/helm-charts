@@ -23,6 +23,14 @@ services:
       - ~/.config/:/root/.config
     ports:
       - "3000:3000"
+  embed-fixture:
+    image: gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:release-1.2.0
+    networks:
+      - speakeasy_charts_network
+    volumes:
+      - ~/.config/:/root/.config
+    ports:
+      - "3001:3001"
   postgres:
     image: postgres:alpine
     restart: always
