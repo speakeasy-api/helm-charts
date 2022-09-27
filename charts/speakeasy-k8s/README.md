@@ -38,7 +38,7 @@ Provide an overlay for the changes needed to `values.yaml` by following the sect
 Speakeasy uses Github OAuth to provide authentication for your org. Under settings for the Github Organization you'd like to
 authenticate, click "Developer Settings" > "Oauth Apps" > "New Oauth App". Fill in the fields (example in screenshot below). Please
 ensure the "Authorization callback URL" has a value in the form of `https://<DOMAIN>/v1/auth/callback/github`, where `<DOMAIN>`
-is replaced by the domain name of the A record (added in the [Ingress Section](#with-ingress) below).
+is replaced by the domain name of the web A record (added in the [Ingress Section](#with-ingress) below).
 
 ![](<../../assets/Screen Shot 2022-09-22 at 1.11.33 AM.png>)
 
@@ -200,7 +200,7 @@ Execute the following steps:
    ```
    kubectl get svc -n <NAMESPACE> emissary-ingress -o "go-template={{range .status.loadBalancer.ingress}}{{or .ip .hostname}}{{end}}"
    ```
-   Then, create an A record on your DNS to point your desired domain for Speakeasy to this IP. For example domain names, refer to
+   Then, create A records on your DNS to point your desired domains for Speakeasy's web and gRPC services to this IP. For example domain names, refer to
    the sample overlay in the end of the [Configuration](#configuration) section above.
 4. Install `cert-manager` with the following overlay:
     ```
@@ -225,22 +225,23 @@ Execute the following steps:
    ```
    kubectl apply -f <path/to/ambassador/cert-manager-ambassador-crds.yaml> --namespace=<NAMESPACE>
    ```
-6. Now, we have to provision the certificate for our Speakeasy domain.
+6. Now, we have to provision a certificate for each of our Speakeasy domains.
 
-   In `ambassador/ambassador-web-cert.yaml`, ensure the "$" wrapped value in `spec.dnsNames` is replaced with the corresponding
+   In `ambassador/ambassador-web-cert.yaml` and `ambassador/ambassador-grpc-cert.yaml`, ensure the "$" wrapped value in `spec.dnsNames` is replaced with the corresponding
    domain name for the A record you issued above.
    
-   Then deploy the certificate:
+   Then deploy each certificate:
    ```
    kubectl apply -f speakeasy-k8s/ambassador/ambassador-web-cert.yaml --namespace <NAMESPACE>
+   kubectl apply -f speakeasy-k8s/ambassador/ambassador-grpc-cert.yaml --namespace <NAMESPACE>
    ```
-   You may monitor the status of the certificate by issuing the following command
+   You may monitor the status of each certificate by issuing the following command
    and watching the "READY" column:
    ```
    kubectl get certificates -n <NAMESPACE> --watch
    ```
-7. The certificate from the previous step should now be ready. In `./ambassador/ambassador-mappings-and-hosts.yaml`, replace
-   all the "$" wrapped values for `spec.hostname`, and ensure they're equivalent to the domain name for the A record you 
+7. The certificates from the previous step should now be ready. In `./ambassador/ambassador-mappings-and-hosts.yaml`, replace
+   all the "$" wrapped values for `spec.hostname`, and ensure they're equivalent to the domain names for the A record you 
    issued above.<br/><br/>
    Then, apply the file:
    ```
