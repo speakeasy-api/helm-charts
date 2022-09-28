@@ -1,0 +1,9 @@
+dependencies:
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.6.24
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.6.1
+digest: sha256:5e04d20be3870888cc6c838dc8dca91f21689795204dca0e92ea112c04948e34
+generated: "2022-09-06T10:30:08.446297-07:00"

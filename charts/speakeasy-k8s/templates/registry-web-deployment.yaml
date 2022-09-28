@@ -53,11 +53,13 @@ spec:
               value: {{ .Values.auth.GithubClientId }}
             - name: GITHUB_CALLBACK_URL
               value: {{ .Values.auth.GithubCallbackURL }}
+            {{- if .Values.registry.sendGridKey -}}
             - name: SENDGRID_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: send-grid-key-secret
                   key: sendGridKey
+            {{- end }}
             - name: GITHUB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
