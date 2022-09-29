@@ -6,6 +6,9 @@ metadata:
   name: {{ $serviceName }}
   labels:
     {{- include "speakeasy-registry.labels" . | nindent 4 }}
+    {{- if .Values.datadog.enabled }}
+    {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     matchLabels:
@@ -14,6 +17,9 @@ spec:
     metadata:
       labels:
         {{- include "speakeasy-registry.selectorLabels" . | nindent 8 }}
+        {{- if .Values.datadog.enabled }}
+        {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: registry
@@ -47,6 +53,13 @@ spec:
               value: {{ .Values.auth.GithubClientId }}
             - name: GITHUB_CALLBACK_URL
               value: {{ .Values.auth.GithubCallbackURL }}
+            {{- if .Values.registry.sendGridKey -}}
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: send-grid-key-secret
+                  key: sendGridKey
+            {{- end }}
             - name: GITHUB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -57,6 +70,23 @@ spec:
                 secretKeyRef:
                   name: jwt-secret-key-secret
                   key: jwtSecretKey
+            {{- if .Values.datadog.enabled }}
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+            {{- end }}
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -73,6 +103,23 @@ spec:
         - name: web
           image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
+        {{- if .Values.registry.cloudsql.enabled }}
+        - name: cloud-sql-proxy
+          image: gcr.io/cloudsql-docker/gce-proxy:1.28.0 # make sure to use the latest version
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/cloud_sql_proxy"
+            - "-log_debug_stdout"
+            - "{{ .Values.registry.cloudsql.connectionString }}"
+            - "-credential_file=/secrets/service_account.json"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 2
+          volumeMounts:
+          - mountPath: /secrets/
+            name: service-account-credentials
+            readOnly: true
+        {{- end }}
         - name: web
           image: "gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always

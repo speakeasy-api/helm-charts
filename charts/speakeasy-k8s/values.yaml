@@ -43,6 +43,15 @@ registry:
     #grpcHostnames:
     #- grpc.selfhostspeakeasy.com
 
+  # cloudsql integration is still in progress, do not enable.
+  cloudsql:
+    enabled: false
+  # cloudsql connection string to be used by cloudproxy. connectionString needs to be set if cloudsql.enabled = true
+  # connectionString: "-instances=<INSTANCE_CONNECTION_NAME>=tcp:<DB_PORT>"
+
+  # used by managed speakeasy to send invites to the platform. No need to set this value for selfhosted speakeasy
+  # sendGridKey: "**********"
+
 # Notification Emails for Infrastructure Configuration (e.g. LetsEncrypt)
 # This is the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent to
 # notificationEmail: "anuraag@speakeasyapi.dev"
@@ -75,7 +84,6 @@ auth:
   # The callback URL
   GithubCallbackURL: "https://api.selfhostspeakeasy.com/v1/auth/callback/github"
 
-
 # Postgresql for Speakeasy to store app-specific config and requests from the SDK capture
 postgresql:
   # If true, postgresql will be deployed with PVs backed by the default StorageClass for the underlying cloud provider
@@ -91,3 +99,21 @@ postgresql:
       type: LoadBalancer
       # static IP of Postgresql LoadBalancer service
       # loadBalancerIP:
+
+# -- [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap)
+ingress-nginx:
+  controller:
+      config:
+        use-forwarded-headers: "true"
+        use-http2: "true"
+
+# datadog integration is still in progress, do not enable.
+datadog:
+  #if true, speakeasy will be monitored using datadog
+  enabled: false
+  datadog:
+   site: datadoghq.com
+   apiKey: "***********"
+   logs:
+     enabled: true
+     containerCollectAll: true

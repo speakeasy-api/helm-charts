@@ -50,7 +50,7 @@ Also, set the values for `registry.ingress.apiHostnames`, `registry.ingress.webH
 and `registry.ingress.grpcHostnames` to your specified domain names for Speakeasy's registry API, web, and gRPC services.
 ### Ambassador
 If using Ambassador mappings, ensure `registry.ingress.enabled` and `cert-manager.enabled` are both `false`.
-See the [Ambassador Installation](#emissary-ingress) section below for the steps required to use Ambassador for your Speakeasy
+See the [Ambassador Installation](./ambassador/README.md#emissary-ingress) section for the steps required to use Ambassador for your Speakeasy
 deployment.
 
 [//]: # (Following instruction will be relevant once we provide a method for fixing the IP of ingress-nginx's LoadBalancer service
@@ -94,8 +94,8 @@ with Ambassador mappings.
 ### Speakeasy Version
 Set values for `registry.image.tag` with the version of Speakeasy you'd like to install.
 
-The following is a sample overlay file for a configuration requiring ingress to be spun up by this chart and connecting to
-an externally managed Postgres:
+The following is a sample overlay file for a configuration that installs ingress and connects to
+an externally managed Postgres and BigQuery:
 ```
 registry:
   image:
@@ -103,6 +103,10 @@ registry:
   envVars:
       - key: POSTGRES_DSN
         value: postgres://postgres:postgres@34.149.47.53:5432/postgres?sslmode=disable
+      - key: BIGQUERY_PROJECT
+        value: your-gcloud-project
+      - key: BIGQUERY_DSN
+        value: your-dataset
   ingress:
     enabled: true
     apiHostnames:
@@ -180,74 +184,8 @@ If enabling `cert-manager`, there are strict requirements regarding the ordering
 
 #### emissary-ingress
 
-To use Ambassador's `emissary-ingress` controller, please ensure the following values are set to `false`:
-
-    registry.ingress.enabled
-    cert-manager.enabled
-Execute the following steps:
-1. First, add CRDs for `emissary-ingress`:
-    ```
-   helm repo add datawire https://app.getambassador.io
-   helm repo update
-   kubectl apply -f https://app.getambassador.io/yaml/emissary/3.1.0/emissary-crds.yaml
-    ```
-2. Install `emissary-ingress`:
-   ```
-   helm install -n <NAMESPACE> emissary-ingress datawire/emissary-ingress && kubectl wait --for condition=available --timeout=90s deploy \
-    -lapp.kubernetes.io/instance=emissary-ingress
-   ```
-3. Get the external IP of the `LoadBalancer` via:
-   ```
-   kubectl get svc -n <NAMESPACE> emissary-ingress -o "go-template={{range .status.loadBalancer.ingress}}{{or .ip .hostname}}{{end}}"
-   ```
-   Then, create A records on your DNS to point your desired domains for Speakeasy's web and gRPC services to this IP. For example domain names, refer to
-   the sample overlay in the end of the [Configuration](#configuration) section above.
-4. Install `cert-manager` with the following overlay:
-    ```
-   installCRDs: true
-   podDnsPolicy: None
-   podDnsConfig:
-     nameservers:
-       - 8.8.8.8
-       - 1.1.1.1
-       - 208.67.222.222
-    ```
-   Execute the following:
-    ```
-   helm repo add jetstack https://charts.jetstack.io
-   helm repo update
-   helm install -n <NAMESPACE> cert-manager jetstack/cert-manager -f <OVERLAY>
-    ```
-5. `cert-manager` must issue an HTTP-01 challenge to verify domain ownership. We will need to apply CRDs from both `cert-manager`
-   and `emissary-ingress` to enable this. Replace the "$YOUR_EMAIL_HERE$" in `./ambassador/cert-manager-ambassador-crds.yaml`
-   to the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent.<br/><br/>
-   Then, apply the file:
-   ```
-   kubectl apply -f <path/to/ambassador/cert-manager-ambassador-crds.yaml> --namespace=<NAMESPACE>
-   ```
-6. Now, we have to provision a certificate for each of our Speakeasy domains.
-
-   In `ambassador/ambassador-web-cert.yaml`, `ambassador/ambassador-embed-fixture-cert.yaml`, and `ambassador/ambassador-grpc-cert.yaml`, ensure the "$" wrapped value in `spec.dnsNames` is replaced with the corresponding
-   domain name for the A record you issued above.
-   
-   Then deploy each certificate:
-   ```
-   kubectl apply -f speakeasy-k8s/ambassador/ambassador-web-cert.yaml --namespace <NAMESPACE>
-   kubectl apply -f speakeasy-k8s/ambassador/ambassador-embed-fixture-cert.yaml --namespace <NAMESPACE>
-   kubectl apply -f speakeasy-k8s/ambassador/ambassador-grpc-cert.yaml --namespace <NAMESPACE>
-   ```
-   You may monitor the status of each certificate by issuing the following command
-   and watching the "READY" column:
-   ```
-   kubectl get certificates -n <NAMESPACE> --watch
-   ```
-7. The certificates from the previous step should now be ready. In `./ambassador/ambassador-mappings-and-hosts.yaml`, replace
-   all the "$" wrapped values for `spec.hostname`, and ensure they're equivalent to the domain names for the A record you 
-   issued above.<br/><br/>
-   Then, apply the file:
-   ```
-   kubectl apply -f <path/to/ambassador/ambassador-mappings-and-hosts.yaml> --namespace=<NAMESPACE>
-   ```
+To use the `emissary-ingress` controller with `cert-manager`, please follow the steps in [Using emissary-ingress](./ambassador/README.md#emissary-ingress)
+<br/><br/>
 
 Finally, execute the following install for `speakeasy-k8s`:
 ```
@@ -255,7 +193,7 @@ helm install speakeasy speakeasy/speakeasy-k8s -f <OVERLAY> -n <NAMESPACE> --tim
 --set fullnameOverride=speakeasy
 ```
 
-After waiting a couple minutes, Speakeasy should now be running successfully in your environment. You should
+Speakeasy should soon be running successfully in your environment. You should
 now be able to access the HTTPS endpoint for your web or root web hostname.<br /><br />
 To uninstall the charts:
 
