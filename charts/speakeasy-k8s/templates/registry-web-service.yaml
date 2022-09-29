@@ -23,6 +23,6 @@ spec:
     - port: 82
       targetPort: 3001
       protocol: TCP
-      name: web
+      name: embed
   selector:
     {{- include "speakeasy-registry.selectorLabels" . | nindent 4 }}
