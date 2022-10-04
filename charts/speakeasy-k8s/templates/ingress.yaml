@@ -56,4 +56,23 @@ spec:
             path: /
             pathType: Prefix
     {{- end }}
+    {{- range $v := .Values.registry.ingress.embedFixtureHostnames }}
+    - host: {{ $v }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 80
+            path: /v1/
+            pathType: Prefix
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 82
+            path: /
+            pathType: Prefix
+    {{- end }}
 {{- end }}
