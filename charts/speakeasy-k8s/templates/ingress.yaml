@@ -23,8 +23,8 @@ spec:
         {{- range $v := .Values.registry.ingress.embedFixtureHostnames }}
         - {{ $v }}
         {{- end }}
-        {{- if .Values.cert-manager.portalWildcardDomain }}
-        - {{ .Values.cert-manager.portalWildcardDomain }}
+        {{- if .Values "external-dns" "enabled" }}
+        - {{ .Values "external-dns" "portalWildcardDomain" | quote }}
         {{- end }}
       secretName: nginx-letsencrypt-registry
   rules:
@@ -78,9 +78,9 @@ spec:
             path: /
             pathType: Prefix
     {{- end }}
-    {{- if .Values.cert-manager.portalWildcardDomain }}
-      # For now, since we don't have a portal to host, just route to the webapp
-      - host: .Values.cert-manager.portalWildcardDomain
+    {{- if .Values "external-dns" "enabled" }}
+      # For now, since we don't have a portal to host,A  just route to the webapp
+      - host: {{ .Values "external-dns" "portalWildcardDomain" | quote }}
         http:
           paths:
             - backend:
