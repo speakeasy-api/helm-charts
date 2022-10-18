@@ -23,6 +23,9 @@ spec:
         {{- range $v := .Values.registry.ingress.embedFixtureHostnames }}
         - {{ $v }}
         {{- end }}
+        {{- if .Values.cert-manager.portalWildcardDomain }}
+        - {{ .Values.cert-manager.portalWildcardDomain }}
+        {{- end }}
       secretName: nginx-letsencrypt-registry
   rules:
     {{- range $v := .Values.registry.ingress.webHostnames }}
@@ -75,4 +78,8 @@ spec:
             path: /
             pathType: Prefix
     {{- end }}
+    {{- if .Values.cert-manager.externalDnsProvider }}
+    # TODO: add rule(s) for portal
+    {{- end }}
+
 {{- end }}
