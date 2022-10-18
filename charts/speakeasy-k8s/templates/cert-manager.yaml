@@ -12,14 +12,16 @@ spec:
     privateKeySecretRef:
       name: speakeasy-private-key
     solvers:
-      - http01:
-          ingress:
-            class: nginx
-    {{- if .Values "external-dns" "enabled" }}
-    - selectors:
-        dnsNames:
-        - {{ .Values "external-dns" "portalWildcardDomain"}}
-      - dns01:
-          {{ .Values "external-dns" "providers" }}
-  ` {{- end }}
+    - http01:
+        ingress:
+          class: nginx
+  {{- if index ".Values.external-dns.enabled" }}
+    {{- with ".Values.external-dns.providers" }}
+    - dns01:
+        {{ ".Values.external-dns.provider" | toYaml}}:
+    {{- end }}
+      selector:
+        dnsNames: |-
+          - {{ ".Values.external-dns.portalWildcardDomain"  }}
+  {{- end }}
 {{- end }}

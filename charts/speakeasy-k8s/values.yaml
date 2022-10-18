@@ -68,7 +68,8 @@ cert-manager:
 external-dns:
   enabled: false
   # Provider configuration for external-dns (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
-  providers:
+  provider:
+  providerSpec:
   # The wildcard domain that will route to the self-serve portal
   #portalWildcardDomain: *.portal.selfhostspeakeasy.com
 
