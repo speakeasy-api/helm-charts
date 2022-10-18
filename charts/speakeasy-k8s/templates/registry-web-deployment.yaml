@@ -60,11 +60,13 @@ spec:
                   name: send-grid-key-secret
                   key: sendGridKey
             {{- end }}
+            {{- if .Values.auth.GithubClientSecret }}
             - name: GITHUB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: github-client-secret
                   key: githubClientSecret
+            {{- end }}
             - name: JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
