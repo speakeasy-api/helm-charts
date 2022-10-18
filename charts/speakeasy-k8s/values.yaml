@@ -67,7 +67,7 @@ cert-manager:
   # Provider configuration for external-dns (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
   externalDnsProviders:
   #
-  #portalWildcardDomain: portal.selfhostspeakeasy.com
+  #portalWildcardDomain: *.portal.selfhostspeakeasy.com
 bigquery:
   # GCP project containing Bigquery bounded/unbounded request tables
   # If this value is specified, these Bigquery tables will store request/response capture data from the configured
