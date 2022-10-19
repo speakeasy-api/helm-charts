@@ -15,13 +15,31 @@ spec:
     - http01:
         ingress:
           class: nginx
-  {{- if index ".Values.external-dns.enabled" }}
-    {{- with ".Values.external-dns.providers" }}
+  {{- if index .Values.portal.enabled }}
     - dns01:
-        {{ ".Values.external-dns.provider" | toYaml}}:
-    {{- end }}
+        {{ .Values.portal.provider }}:
+        {{- if .Values.portal.provider "cloudDNS" }}
+          project: {{ .Values.portal.project }}
+          serviceAccountSecretRef:
+          {{- range $k, $v := .Values.portal.serviceAccountSecretRef }}
+            {{ $k }}: {{ $v }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.portal.provider "route53" }}
+          region: {{ .Values.portal.region }}
+          role: {{ .Values.portal.role }}
+        {{- if .Values.portal.hostedZoneID }}
+          hostedZoneId: {{ .Values.portal.hostedZoneID }}
+        {{- else }}
+          accessKeyId: {{ .Values.portal.accessKeyID }}
+          secretAccessKeySecretRef:
+          {{- range $k, $v := .Values.portal.secretAccessKeySecretRef }}
+          {{ $k }}: {{ $v }}
+          {{- end}}
+        {{- end }}
+        {{- end }}
       selector:
-        dnsNames: |-
-          - {{ ".Values.external-dns.portalWildcardDomain"  }}
+        dnsNames:
+          {{- .Values.portal.portalWildcardDomain | quote }}
   {{- end }}
 {{- end }}

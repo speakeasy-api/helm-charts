@@ -65,13 +65,27 @@ cert-manager:
       - 1.1.1.1
       - 208.67.222.222
 
-external-dns:
+portal:
   enabled: false
-  # Provider configuration for external-dns (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
-  provider:
-  providerSpec:
   # The wildcard domain that will route to the self-serve portal
   #portalWildcardDomain: *.portal.selfhostspeakeasy.com
+  # Provider name for external-dns (cloudDNS | route53) (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
+  #provider: cloudDNS
+  # Required properties for cloudDNS
+  #project: ""
+  #serviceAccountSecretRef:
+  #  name:""
+  #  key: ""
+  # Required properties for route53
+  #region: us-east-1
+  #role: ""
+  # Required properties for route53 with ambient credentials
+  #hostedZoneID: ""
+  # Required properties for route53 with explicit credentials
+  #secretKeyID: ""
+  #secretAccessKeySecret:
+  #  name: ""
+  #  key: ""
 
 bigquery:
   # GCP project containing Bigquery bounded/unbounded request tables
