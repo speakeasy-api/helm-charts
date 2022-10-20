@@ -78,24 +78,23 @@ spec:
             path: /
             pathType: Prefix
     {{- end }}
-    {{- if index .Values.portal.enabled }}
-      # For now, since we don't have a portal to host,A  just route to the webapp
-      - host: {{ .Values.portal.portalWildcardDomain | quote }}
-        http:
-          paths:
-            - backend:
-                service:
-                  name: {{ $serviceName }}
-                  port:
-                    number: 80
-              path: /v1/
-              pathType: Prefix
-            - backend:
-                service:
-                  name: {{ $serviceName }}
-                  port:
-                    number: 81
-              path: /
-              pathType: Prefix
+    {{- if eq .Values.portal.enabled true }}
+    - host: {{ .Values.portal.portalWildcardDomain | quote }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 80
+            path: /v1/
+            pathType: Prefix
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 81
+            path: /
+            pathType: Prefix
     {{- end }}
 {{- end }}

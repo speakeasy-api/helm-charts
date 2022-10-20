@@ -66,11 +66,11 @@ cert-manager:
       - 208.67.222.222
 
 portal:
-  enabled: false
+  enabled: true
   # The wildcard domain that will route to the self-serve portal
-  #portalWildcardDomain: *.portal.selfhostspeakeasy.com
+  portalWildcardDomain: ""
   # Provider name for external-dns (cloudDNS | route53) (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
-  #provider: cloudDNS
+  provider: cloudDNS
   # Required properties for cloudDNS
   #project: ""
   #serviceAccountSecretRef:

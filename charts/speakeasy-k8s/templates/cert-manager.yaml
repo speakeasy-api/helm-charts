@@ -18,14 +18,14 @@ spec:
   {{- if index .Values.portal.enabled }}
     - dns01:
         {{ .Values.portal.provider }}:
-        {{- if .Values.portal.provider "cloudDNS" }}
+        {{- if eq .Values.portal.provider "cloudDNS" }}
           project: {{ .Values.portal.project }}
           serviceAccountSecretRef:
           {{- range $k, $v := .Values.portal.serviceAccountSecretRef }}
             {{ $k }}: {{ $v }}
           {{- end }}
         {{- end }}
-        {{- if .Values.portal.provider "route53" }}
+        {{- if eq .Values.portal.provider "route53" }}
           region: {{ .Values.portal.region }}
           role: {{ .Values.portal.role }}
         {{- if .Values.portal.hostedZoneID }}
@@ -40,6 +40,6 @@ spec:
         {{- end }}
       selector:
         dnsNames:
-          {{- .Values.portal.portalWildcardDomain | quote }}
+          - {{ .Values.portal.portalWildcardDomain | quote }}
   {{- end }}
 {{- end }}
