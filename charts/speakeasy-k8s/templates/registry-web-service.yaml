@@ -24,5 +24,10 @@ spec:
       targetPort: 35292
       protocol: TCP
       name: embed
+    - port: 83
+      # TODO: point to portal port
+      targetPort: 3000
+      protocol: TCP
+      name: portal
   selector:
     {{- include "speakeasy-registry.selectorLabels" . | nindent 4 }}

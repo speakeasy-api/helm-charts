@@ -15,7 +15,7 @@ spec:
     - http01:
         ingress:
           class: nginx
-  {{- if index .Values.portal.enabled }}
+  {{- if .Values.portal.enabled }}
     - dns01:
         {{ .Values.portal.provider }}:
         {{- if eq .Values.portal.provider "cloudDNS" }}
