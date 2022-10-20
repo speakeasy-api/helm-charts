@@ -8,8 +8,8 @@ services:
     volumes:
       - ~/.config/:/root/.config
     ports:
-      - "8080:8080"
-      - "9090:9090"
+      - "35290:35290"
+      - "35300:35300"
     depends_on:
       postgres:
         condition: service_healthy
@@ -22,7 +22,7 @@ services:
     volumes:
       - ~/.config/:/root/.config
     ports:
-      - "3000:3000"
+      - "35291:35291"
   embed-fixture:
     image: gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:release-1.2.0
     networks:
@@ -30,7 +30,7 @@ services:
     volumes:
       - ~/.config/:/root/.config
     ports:
-      - "3001:3001"
+      - "35292:35292"
   postgres:
     image: postgres:alpine
     restart: always

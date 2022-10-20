@@ -9,19 +9,19 @@ spec:
   type: NodePort
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 35290
       protocol: TCP
       name: http
     - port: 90
-      targetPort: 9090
+      targetPort: 35300
       protocol: TCP
       name: grpc
     - port: 81
-      targetPort: 3000
+      targetPort: 35291
       protocol: TCP
       name: web
     - port: 82
-      targetPort: 3001
+      targetPort: 35292
       protocol: TCP
       name: embed
   selector:
