@@ -58,8 +58,7 @@ metadata:
 spec:
   hostname: $YOUR_PORTAL_HOSTNAME$
   prefix: /
-  # TODO: point to portal port
-  service: speakeasy-service:81
+  service: speakeasy-service:83
 ---
 apiVersion: getambassador.io/v3alpha1
 kind: Mapping

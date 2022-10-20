@@ -94,8 +94,7 @@ spec:
               service:
                 name: {{ $serviceName }}
                 port:
-                  # TODO: point to portal port
-                  number: 81
+                  number: 83
             path: /
             pathType: Prefix
         {{- end }}
