@@ -43,14 +43,20 @@ spec:
               value: {{ $serverVersion }}
             - name: SPEAKEASY_ENVIRONMENT
               value: {{ .Values.env }}
+            {{- if .Values.auth.SignInURL }}
             - name: SIGN_IN_URL
               value: {{ .Values.auth.SignInURL }}
+            {{- end }}
             - name: CLOUD_PROVIDER
               value: {{ .Values.cloud }}
+            {{- if .Values.auth.GithubClientId }}
             - name: GITHUB_CLIENT_ID
               value: {{ .Values.auth.GithubClientId }}
+            {{- end }}
+            {{- if .Values.auth.GithubCallbackURL  }}
             - name: GITHUB_CALLBACK_URL
               value: {{ .Values.auth.GithubCallbackURL }}
+            {{- end }}
             {{- if .Values.registry.sendGridKey }}
             - name: SENDGRID_API_KEY
               valueFrom:
