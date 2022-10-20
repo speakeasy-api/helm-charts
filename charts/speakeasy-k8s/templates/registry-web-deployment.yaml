@@ -25,10 +25,6 @@ spec:
         - name: registry
           image: "gcr.io/linen-analyst-344721/speakeasy-api/registry:{{ .Values.registry.image.tag }}"
           env:
-            {{- range $v := .Values.registry.envVars }}
-            - name: {{ $v.key}}
-              value: {{ $v.value}}
-            {{- end }}
             - name: BIGQUERY_PROJECT
               value: {{ .Values.bigquery.ProjectID }}
             - name: BIGQUERY_DATASET
@@ -90,6 +86,10 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.labels['tags.datadoghq.com/version']
+            {{- end }}
+            {{- range $v := .Values.registry.envVars }}
+            - name: {{ $v.key}}
+              value: {{ $v.value}}
             {{- end }}
           imagePullPolicy: Always
           livenessProbe:
