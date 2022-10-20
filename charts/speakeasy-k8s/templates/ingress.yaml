@@ -24,7 +24,7 @@ spec:
         - {{ $v }}
         {{- end }}
         {{- if .Values.portal.enabled }}
-        - {{ .Values.portal.portalWildcardDomain | quote }}
+        - {{ .Values.portal.portalWildcardDomains | quote }}
         {{- end }}
       secretName: nginx-letsencrypt-registry
   rules:
