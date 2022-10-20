@@ -33,7 +33,7 @@ data "kubernetes_service" "postgres" {
 }
 
 locals {
-  postgres_ip_or_hostname = length(data.kubernetes_service.postgres.status.0.load_balancer.0.ingress.0.ip) == 0 ? data.kubernetes_service.postgres.status.0.load_balancer.0.ingress.0.hostname : data.kubernetes_service.postgres.status.0.load_balancer.0.ingress.0.ip
+  postgresIpOrHostname = length(data.kubernetes_service.postgres.status.0.load_balancer.0.ingress.0.ip) == 0 ? data.kubernetes_service.postgres.status.0.load_balancer.0.ingress.0.hostname : data.kubernetes_service.postgres.status.0.load_balancer.0.ingress.0.ip
 }
 
 resource "helm_release" "cert_manager" {
@@ -60,10 +60,10 @@ resource "helm_release" "cert_manager" {
 }
 
 locals {
-  ingressNginxFullName         = "${var.speakeasyName}-ingress-nginx"
-  controllerSuffix             = "controller"
-  controllerFullName           = "${local.ingressNginxFullName}-${local.controllerSuffix}"
-  ingress_nginx_ip_or_hostname = length(data.kubernetes_service.ingress_nginx) == 0 ? null : (length(data.kubernetes_service.ingress_nginx.0.status.0.load_balancer.0.ingress.0.ip) == 0 ? data.kubernetes_service.ingress_nginx.0.status.0.load_balancer.0.ingress.0.hostname : data.kubernetes_service.ingress_nginx.0.status.0.load_balancer.0.ingress.0.ip)
+  ingressNginxFullName     = "${var.speakeasyName}-ingress-nginx"
+  controllerSuffix         = "controller"
+  controllerFullName       = "${local.ingressNginxFullName}-${local.controllerSuffix}"
+  ingressNginxIpOrHostname = length(data.kubernetes_service.ingress_nginx) == 0 ? null : (length(data.kubernetes_service.ingress_nginx.0.status.0.load_balancer.0.ingress.0.ip) == 0 ? data.kubernetes_service.ingress_nginx.0.status.0.load_balancer.0.ingress.0.hostname : data.kubernetes_service.ingress_nginx.0.status.0.load_balancer.0.ingress.0.ip)
 }
 
 resource "helm_release" "ingress_nginx" {
@@ -133,7 +133,7 @@ resource "helm_release" "speakeasy" {
 
   set {
     name  = "postgresql.DSN"
-    value = var.createK8sPostgres ? "postgres://postgres:postgres@${local.postgres_ip_or_hostname}:5432/postgres?sslmode=disable" : var.postgresDSN
+    value = var.createK8sPostgres ? "postgres://postgres:postgres@${local.postgresIpOrHostname}:5432/postgres?sslmode=disable" : var.postgresDSN
   }
 
   set {
