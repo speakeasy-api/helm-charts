@@ -102,6 +102,7 @@ postgresql:
 
 # -- [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap)
 ingress-nginx:
+  enabled: false
   controller:
       config:
         use-forwarded-headers: "true"
