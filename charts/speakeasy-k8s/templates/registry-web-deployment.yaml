@@ -33,8 +33,10 @@ spec:
               value: {{ .Values.bigquery.ProjectID }}
             - name: BIGQUERY_DATASET
               value: {{ .Values.bigquery.DatasetID }}
+            {{- if .Values.registry.svcSecretKey }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: "/secrets/service_account.json"
+              value: "/secrets/{{ .Values.registry.svcSecretKey }}"
+            {{- end }}
             - name: POSTGRES_DSN
               value: {{ .Values.postgresql.DSN }}
             - name: POSTHOG_API_KEY
@@ -98,10 +100,12 @@ spec:
             httpGet:
               path: /
               port: 8080
+          {{- if .Values.registry.svcSecretName }}
           volumeMounts:
           - mountPath: /secrets/
             name: service-account-credentials
             readOnly: true
+          {{- end }}
         - name: web
           image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
@@ -113,7 +117,7 @@ spec:
             - "/cloud_sql_proxy"
             - "-log_debug_stdout"
             - "{{ .Values.registry.cloudsql.connectionString }}"
-            - "-credential_file=/secrets/service_account.json"
+            - "-credential_file=/secrets/{{ .Values.registry.svcSecretKey }}"
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: 2
@@ -126,7 +130,9 @@ spec:
           image: "gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
       volumes:
+      {{- if .Values.registry.svcSecretName }}
       - name: service-account-credentials
         secret:
           defaultMode: 420
-          secretName: {{ .Values.registry.svcSecret }}
+          secretName: {{ .Values.registry.svcSecretName }}
+      {{- end }}

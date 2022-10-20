@@ -20,7 +20,10 @@ registry:
     # Please override with latest stable version
     tag: sha-dc3f770
   # Secret containing the service account key file for the registry
-  svcSecret: registry-service-account-secret
+  # svcSecretName: service-account-secret
+  # key in the secret specified in svcSecretName that maps to the service account private key used for the registry
+  # svcSecretKey: service_account.json
+
   ingress:
     # If true, *Hostnames values below must also be set.
     # Deploys an ingress for the registry API if both the above criteria are met
