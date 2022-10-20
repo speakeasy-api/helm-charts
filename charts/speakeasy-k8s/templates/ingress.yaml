@@ -79,7 +79,7 @@ spec:
             pathType: Prefix
     {{- end }}
     {{- if eq .Values.portal.enabled true }}
-    {{- range $v := .Values.registry.ingress.portalWildcardDomains }}
+    {{- range $v := .Values.portal.portalWildcardDomains }}
     - host: {{ $v | quote }}
       http:
         paths:
