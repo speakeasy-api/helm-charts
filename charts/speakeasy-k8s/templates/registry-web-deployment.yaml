@@ -91,11 +91,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 35290
+              port: 8080
           readinessProbe:
             httpGet:
               path: /
-              port: 35290
+              port: 8080
           volumeMounts:
           - mountPath: /secrets/
             name: service-account-credentials
