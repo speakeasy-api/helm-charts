@@ -54,6 +54,16 @@ spec:
 apiVersion: getambassador.io/v3alpha1
 kind: Mapping
 metadata:
+  name: speakeasy-portal
+spec:
+  hostname: $YOUR_PORTAL_HOSTNAME$
+  prefix: /
+  # TODO: point to portal port
+  service: speakeasy-service:81
+---
+apiVersion: getambassador.io/v3alpha1
+kind: Mapping
+metadata:
   name: speakeasy-grpc
 spec:
   hostname: $YOUR_GRPC_HOSTNAME$ 

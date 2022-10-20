@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ambassador-portal-cert
+spec:
+  secretName: ambassador-portal-cert
+  issuerRef:
+    name: speakeasy-letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - $YOUR_PORTAL_HOSTNAME$

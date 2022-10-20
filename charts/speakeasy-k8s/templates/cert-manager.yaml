@@ -40,6 +40,8 @@ spec:
         {{- end }}
       selector:
         dnsNames:
-          - {{ .Values.portal.portalWildcardDomain | quote }}
+        {{- range $v :=  .Values.portal.portalWildcardDomains }}
+          - {{ $v | quote }}
+        {{- end }}
   {{- end }}
 {{- end }}

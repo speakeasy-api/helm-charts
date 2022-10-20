@@ -79,7 +79,8 @@ spec:
             pathType: Prefix
     {{- end }}
     {{- if eq .Values.portal.enabled true }}
-    - host: {{ .Values.portal.portalWildcardDomain | quote }}
+    {{- range $v := .Values.registry.ingress.portalWildcardDomains }}
+    - host: {{ $v | quote }}
       http:
         paths:
           - backend:
@@ -93,8 +94,10 @@ spec:
               service:
                 name: {{ $serviceName }}
                 port:
+                  # TODO: point to portal port
                   number: 81
             path: /
             pathType: Prefix
+        {{- end }}
     {{- end }}
 {{- end }}

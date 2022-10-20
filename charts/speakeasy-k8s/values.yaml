@@ -68,7 +68,8 @@ cert-manager:
 portal:
   enabled: true
   # The wildcard domain that will route to the self-serve portal
-  portalWildcardDomain: ""
+  portalWildcardDomains:
+    - "*.portal.app.speakeasyapi.dev"
   # Provider name for external-dns (cloudDNS | route53) (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
   provider: cloudDNS
   # Required properties for cloudDNS
