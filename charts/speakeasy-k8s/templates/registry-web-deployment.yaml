@@ -101,11 +101,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: 35290
           readinessProbe:
             httpGet:
               path: /
-              port: 8080
+              port: 35290
           {{- if .Values.registry.svcSecretName }}
           volumeMounts:
           - mountPath: /secrets/
