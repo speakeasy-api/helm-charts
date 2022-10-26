@@ -57,8 +57,6 @@ registry:
 # notificationEmail: "anuraag@speakeasyapi.dev"
 cert-manager:
   enabled: false
-#  external-dns:
-#    enabled: false
   installCRDs: true
   podDnsPolicy: None
   podDnsConfig:
@@ -72,7 +70,7 @@ portal:
   # The wildcard domain that will route to the self-serve portal
   portalWildcardDomains:
     - "*.portal.app.speakeasyapi.dev"
-  # Provider name for external-dns (cloudDNS | route53) (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
+  # Provider name (cloudDNS | route53) (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
   provider: cloudDNS
   # Required properties for cloudDNS
   #project: ""

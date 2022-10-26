@@ -27,10 +27,6 @@ dependencies:
     version: 1.6.1
     repository: https://charts.jetstack.io
     condition: cert-manager.enabled
-#  - name: external-dns
-#    version: 6.10.2
-#    repository: https://charts.bitnami.com/bitnami
-#    condition: cert-manager.external-dns.enabled
   - name: datadog
     version: ~2.36.9
     repository: https://helm.datadoghq.com
