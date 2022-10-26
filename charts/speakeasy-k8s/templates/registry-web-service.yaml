@@ -25,8 +25,7 @@ spec:
       protocol: TCP
       name: embed
     - port: 83
-      # TODO: point to portal port
-      targetPort: 3000
+      targetPort: 35293
       protocol: TCP
       name: portal
   selector:
