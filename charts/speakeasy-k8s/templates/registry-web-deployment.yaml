@@ -125,6 +125,11 @@ spec:
         - name: embed
           image: "gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
+        {{- if .Values.portal.enabled }}
+        - name: end-user-portal
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/end-user-portal:{{ .Values.registry.image.tag }}"
+          imagePullPolicy: Always
+        {{- end }}
       volumes:
       - name: service-account-credentials
         secret:

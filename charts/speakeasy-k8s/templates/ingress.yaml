@@ -24,7 +24,9 @@ spec:
         - {{ $v }}
         {{- end }}
         {{- if .Values.portal.enabled }}
-        - {{ .Values.portal.portalWildcardDomains | quote }}
+        {{- range $v := .Values.registry.ingress.portalWildcardDomains }}
+        - {{ $v | quote}}
+        {{- end }}
         {{- end }}
       secretName: nginx-letsencrypt-registry
   rules:
@@ -94,7 +96,7 @@ spec:
               service:
                 name: {{ $serviceName }}
                 port:
-                  number: 83
+                  number: 81
             path: /
             pathType: Prefix
         {{- end }}

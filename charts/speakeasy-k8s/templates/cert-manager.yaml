@@ -45,3 +45,20 @@ spec:
         {{- end }}
   {{- end }}
 {{- end }}
+---
+{{- if .Values.portal.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "dns01" }}
+  namespace: {{ .Values.env }}
+spec:
+  secretName: portal-com-tls
+  issuerRef:
+    name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "letsencrypt" }}
+    kind: ClusterIssuer
+  dnsNames:
+  {{- range $v :=  .Values.portal.portalWildcardDomains }}
+  - {{ $v | quote }}
+  {{- end }}
+{{- end }}
