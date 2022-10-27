@@ -96,7 +96,7 @@ spec:
               service:
                 name: {{ $serviceName }}
                 port:
-                  number: 81
+                  number: 83
             path: /
             pathType: Prefix
         {{- end }}
