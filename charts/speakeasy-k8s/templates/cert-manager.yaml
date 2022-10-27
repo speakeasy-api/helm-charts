@@ -12,7 +12,53 @@ spec:
     privateKeySecretRef:
       name: speakeasy-private-key
     solvers:
-      - http01:
-          ingress:
-            class: nginx
+    - http01:
+        ingress:
+          class: nginx
+  {{- if .Values.portal.enabled }}
+    - dns01:
+        {{ .Values.portal.provider }}:
+        {{- if eq .Values.portal.provider "cloudDNS" }}
+          project: {{ .Values.portal.project }}
+          serviceAccountSecretRef:
+          {{- range $k, $v := .Values.portal.serviceAccountSecretRef }}
+            {{ $k }}: {{ $v }}
+          {{- end }}
+        {{- end }}
+        {{- if eq .Values.portal.provider "route53" }}
+          region: {{ .Values.portal.region }}
+          role: {{ .Values.portal.role }}
+        {{- if .Values.portal.hostedZoneID }}
+          hostedZoneId: {{ .Values.portal.hostedZoneID }}
+        {{- else }}
+          accessKeyId: {{ .Values.portal.accessKeyID }}
+          secretAccessKeySecretRef:
+          {{- range $k, $v := .Values.portal.secretAccessKeySecretRef }}
+          {{ $k }}: {{ $v }}
+          {{- end}}
+        {{- end }}
+        {{- end }}
+      selector:
+        dnsNames:
+        {{- range $v :=  .Values.portal.portalWildcardDomains }}
+          - {{ $v | quote }}
+        {{- end }}
+  {{- end }}
+{{- end }}
+---
+{{- if .Values.portal.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "dns01" }}
+  namespace: {{ .Values.env }}
+spec:
+  secretName: portal-com-tls
+  issuerRef:
+    name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "letsencrypt" }}
+    kind: ClusterIssuer
+  dnsNames:
+  {{- range $v :=  .Values.portal.portalWildcardDomains }}
+  - {{ $v | quote }}
+  {{- end }}
 {{- end }}
