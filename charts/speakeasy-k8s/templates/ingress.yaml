@@ -24,7 +24,7 @@ spec:
         - {{ $v }}
         {{- end }}
         {{- if .Values.portal.enabled }}
-        {{- range $v := .Values.registry.ingress.portalWildcardDomains }}
+        {{- range $v := .Values.portal.portalWildcardDomains }}
         - {{ $v | quote}}
         {{- end }}
         {{- end }}
