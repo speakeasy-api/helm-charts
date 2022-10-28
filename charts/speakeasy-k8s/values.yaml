@@ -87,6 +87,9 @@ portal:
   #secretAccessKeySecret:
   #  name: ""
   #  key: ""
+  envVars:
+    - key: SERVER_URL
+      value: https://api.speakeasyapi.dev
 
 bigquery:
   # GCP project containing Bigquery bounded/unbounded request tables
