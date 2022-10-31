@@ -14,7 +14,7 @@ data "aws_elb_hosted_zone_id" "main" {}
 
 resource "aws_route53_record" "grpc_dns_record" {
   for_each = toset(local.grpcHostnames == null ? [] : local.grpcHostnames)
-  zone_id  = aws_route53_zone.speakeasy_dns_zone[0].id
+  zone_id  = aws_route53_zone.speakeasy_dns_zone[0].zone_id
   name     = each.value
   type     = "A"
 
@@ -27,7 +27,7 @@ resource "aws_route53_record" "grpc_dns_record" {
 
 resource "aws_route53_record" "api_dns_record" {
   for_each = toset(local.apiHostnames == null ? [] : local.apiHostnames)
-  zone_id  = aws_route53_zone.speakeasy_dns_zone[0].id
+  zone_id  = aws_route53_zone.speakeasy_dns_zone[0].zone_id
   name     = each.value
   type     = "A"
 
@@ -40,7 +40,7 @@ resource "aws_route53_record" "api_dns_record" {
 
 resource "aws_route53_record" "web_dns_record" {
   for_each = toset(local.webHostnames == null ? [] : local.webHostnames)
-  zone_id  = aws_route53_zone.speakeasy_dns_zone[0].id
+  zone_id  = aws_route53_zone.speakeasy_dns_zone[0].zone_id
   name     = each.value
   type     = "A"
 
@@ -53,7 +53,7 @@ resource "aws_route53_record" "web_dns_record" {
 
 resource "aws_route53_record" "embed_dns_record" {
   for_each = toset(local.embedFixtureHostnames == null ? [] : local.embedFixtureHostnames)
-  zone_id  = aws_route53_zone.speakeasy_dns_zone[0].id
+  zone_id  = aws_route53_zone.speakeasy_dns_zone[0].zone_id
   name     = each.value
   type     = "A"
 
