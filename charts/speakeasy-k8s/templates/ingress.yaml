@@ -23,6 +23,11 @@ spec:
         {{- range $v := .Values.registry.ingress.embedFixtureHostnames }}
         - {{ $v }}
         {{- end }}
+        {{- if .Values.portal.enabled }}
+        {{- range $v := .Values.portal.portalWildcardDomains }}
+        - {{ $v | quote}}
+        {{- end }}
+        {{- end }}
       secretName: nginx-letsencrypt-registry
   rules:
     {{- range $v := .Values.registry.ingress.webHostnames }}
@@ -74,5 +79,26 @@ spec:
                   number: 82
             path: /
             pathType: Prefix
+    {{- end }}
+    {{- if eq .Values.portal.enabled true }}
+    {{- range $v := .Values.portal.portalWildcardDomains }}
+    - host: {{ $v | quote }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 80
+            path: /v1/
+            pathType: Prefix
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 83
+            path: /
+            pathType: Prefix
+        {{- end }}
     {{- end }}
 {{- end }}

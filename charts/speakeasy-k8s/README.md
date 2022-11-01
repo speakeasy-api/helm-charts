@@ -2,7 +2,7 @@
 
 This repository contains the official **Helm 3** chart for installing and configuring
 Speakeasy on Kubernetes. For full documentation on deploying Speakeasy on your own
-infrastructure, please see the [Self-Hosting Guide](https://docs.speakeasyapi.dev/speakeasy-user-guide/self-host-speakeasy-coming-soon).
+infrastructure, please see the [Self-Hosting Guide](https://docs.speakeasyapi.dev/docs/self-host-speakeasy/intro).
 
 ### Prerequisites
 
