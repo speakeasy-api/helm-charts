@@ -19,17 +19,18 @@ Even though we'd like this module to be a single-action install of Speakeasy, it
    - Homepage URL: `https://<MY_DOMAIN>`
    - Authorization callback URL: `https://<MY_DOMAIN>/v1/auth/callback/github`
 
+1. **Get Client ID and Client Secret**: After registering your application in the previous step you'll be redirected to a configuration view of the application you just registered. The value under `Client ID` should be the value you set on the module's `githubClientId` variable. Similarly, under `Client secrets` you'll click on `Generate a new client secret` and the provided secret should be the value you set on the module's `githubClientSecretValue`.
 1. **Install terraform module**: you'll need to have the following providers:
 
    - kubernetes provider pointing to the kubernetes cluster where you'd like speakeasy to be installed
    - helm provider pointing to the kubernetes cluster where you'd like speakeasy to be installed
    - google provider pointing to the project where you'd like speakeasy to be installed
 
-   Once you have the above then you are good to make use of the module and install speakeasy running `terraform apply`.
+   Once you have the above then you are good to make use of the module and install speakeasy running `terraform init && terraform apply`.
 
 1. **Update name servers**: If the module created a domain zone for you then most likely you'll need to update the domain's name servers to point to the ones in the newly created zone.
 
-Your speakeasy instance might not be available right away - you might have to wait a few minutes for the DNS changes to propagate.
+Done! Your speakeasy instance might not be available right away - you might have to wait a few minutes for the DNS changes to propagate.
 
 ## Requirements
 

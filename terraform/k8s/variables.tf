@@ -51,31 +51,27 @@ variable "postgresDSN" {
 
 variable "signInURL" {
   type        = string
-  default     = null
   nullable    = false
   description = "The full URL to the Speakeasy homepage the user will be redirected to upon signing in (e.g. `https://www.selfhostspeakeasy.com`)"
 }
 
 variable "githubClientId" {
   type        = string
-  default     = null
   nullable    = false
-  description = "Client ID of the Github Oauth app."
+  description = "Client ID of the Github OAuth app."
 }
 
 variable "githubCallbackURL" {
   type        = string
-  default     = null
   nullable    = false
-  description = "Your application’s callback URL (e.g. `https://api.selfhostspeakeasy.com/v1/auth/callback/github`)"
+  description = "Authorization callback URL of the Github OAuth app"
 }
 
 variable "githubClientSecretValue" {
   type        = string
   default     = null
   sensitive   = true
-  nullable    = false
-  description = "Client secret of the Github Oauth app. If not null then a kubernetes secret will be created containing this value."
+  description = "Client secret of the Github OAuth app. If not null then a kubernetes secret will be created containing this value."
 }
 
 variable "githubClientSecretName" {

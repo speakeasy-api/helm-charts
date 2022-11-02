@@ -1,4 +1,4 @@
 output "nginx_loadbalancer_ip_or_hostname" {
-  type  = string
-  value = local.ingressNginxIpOrHostname
+  value       = local.ingressNginxIpOrHostname
+  description = "nginx's load balancer static ip or hostname"
 }
