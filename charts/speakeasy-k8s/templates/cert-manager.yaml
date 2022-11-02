@@ -1,4 +1,4 @@
-{{- if or .Values.cert-manager.enabled .Values.createClusterIssuer -}}
+{{- if or (index .Values "cert-manager" "enabled") .Values.createClusterIssuer -}}
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
