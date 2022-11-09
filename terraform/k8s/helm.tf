@@ -122,9 +122,9 @@ locals {
 
 resource "helm_release" "speakeasy" {
   name      = "speakeasy"
-  chart     = "/Users/speakeasy/code/helm-charts/charts/speakeasy-k8s" #todo: change to non-local
+  chart     = "../../charts/speakeasy-k8s"
   namespace = var.namespace
-  version   = "2.3.0"
+  version   = "3.0.0"
 
   set {
     name  = "fullnameOverride"
