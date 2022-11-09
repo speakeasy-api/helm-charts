@@ -25,16 +25,14 @@ spec:
         - name: registry
           image: "gcr.io/linen-analyst-344721/speakeasy-api/registry:{{ .Values.registry.image.tag }}"
           env:
-            {{- range $v := .Values.registry.envVars }}
-            - name: {{ $v.key}}
-              value: {{ $v.value}}
-            {{- end }}
             - name: BIGQUERY_PROJECT
               value: {{ .Values.bigquery.ProjectID }}
             - name: BIGQUERY_DATASET
               value: {{ .Values.bigquery.DatasetID }}
+            {{- if .Values.registry.svcSecretKey }}
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: "/secrets/service_account.json"
+              value: "/secrets/{{ .Values.registry.svcSecretKey }}"
+            {{- end }}
             - name: POSTGRES_DSN
               value: {{ .Values.postgresql.DSN }}
             - name: POSTHOG_API_KEY
@@ -45,14 +43,20 @@ spec:
               value: {{ $serverVersion }}
             - name: SPEAKEASY_ENVIRONMENT
               value: {{ .Values.env }}
+            {{- if .Values.auth.SignInURL }}
             - name: SIGN_IN_URL
               value: {{ .Values.auth.SignInURL }}
+            {{- end }}
             - name: CLOUD_PROVIDER
               value: {{ .Values.cloud }}
+            {{- if .Values.auth.GithubClientId }}
             - name: GITHUB_CLIENT_ID
               value: {{ .Values.auth.GithubClientId }}
+            {{- end }}
+            {{- if .Values.auth.GithubCallbackURL  }}
             - name: GITHUB_CALLBACK_URL
               value: {{ .Values.auth.GithubCallbackURL }}
+            {{- end }}
             {{- if .Values.registry.sendGridKey }}
             - name: SENDGRID_API_KEY
               valueFrom:
@@ -60,12 +64,12 @@ spec:
                   name: send-grid-key-secret
                   key: sendGridKey
             {{- end }}
-            {{- if .Values.auth.GithubClientSecret }}
+            {{- if .Values.auth.GithubClientSecretName }}
             - name: GITHUB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: github-client-secret
-                  key: githubClientSecret
+                  name: {{ .Values.auth.GithubClientSecretName }}
+                  key: {{ .Values.auth.GithubClientSecretKey }}
             {{- end }}
             - name: JWT_SECRET_KEY
               valueFrom:
@@ -89,6 +93,10 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.labels['tags.datadoghq.com/version']
             {{- end }}
+            {{- range $v := .Values.registry.envVars }}
+            - name: {{ $v.key}}
+              value: {{ $v.value}}
+            {{- end }}
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -98,10 +106,12 @@ spec:
             httpGet:
               path: /
               port: 35290
+          {{- if .Values.registry.svcSecretName }}
           volumeMounts:
           - mountPath: /secrets/
             name: service-account-credentials
             readOnly: true
+          {{- end }}
         - name: web
           image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
@@ -113,7 +123,7 @@ spec:
             - "/cloud_sql_proxy"
             - "-log_debug_stdout"
             - "{{ .Values.registry.cloudsql.connectionString }}"
-            - "-credential_file=/secrets/service_account.json"
+            - "-credential_file=/secrets/{{ .Values.registry.svcSecretKey }}"
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: 2
@@ -136,7 +146,9 @@ spec:
             {{- end }}
         {{- end }}
       volumes:
+      {{- if .Values.registry.svcSecretName }}
       - name: service-account-credentials
         secret:
           defaultMode: 420
-          secretName: {{ .Values.registry.svcSecret }}
+          secretName: {{ .Values.registry.svcSecretName }}
+      {{- end }}
