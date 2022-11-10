@@ -93,6 +93,10 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.labels['tags.datadoghq.com/version']
             {{- end }}
+            {{- if .Values.portal.enabled }}
+            - name: "HOST_TO_PORTAL_WORKSPACE_ID"
+              value: {{ range $k, $v := .Values.portal.portalAdditionalHosts}}{{if $k }},{{end}}{{$v.host}}={{$v.workspaceId}}{{ end }}
+            {{- end }}
             {{- range $v := .Values.registry.envVars }}
             - name: {{ $v.key}}
               value: {{ $v.value}}
@@ -144,6 +148,8 @@ spec:
             - name: {{ $v.key}}
               value: {{ $v.value}}
             {{- end }}
+            - name: "HOST_TO_PORTAL_WORKSPACE_ID"
+              value: {{ range $k, $v := .Values.portal.portalAdditionalHosts}}{{if $k }},{{end}}{{$v.host}}={{$v.workspaceId}}{{ end }}
         {{- end }}
       volumes:
       {{- if .Values.registry.svcSecretName }}
