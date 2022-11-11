@@ -96,6 +96,8 @@ spec:
             {{- if .Values.portal.enabled }}
             - name: "HOST_TO_PORTAL_WORKSPACE_ID"
               value: {{ range $k, $v := .Values.portal.portalAdditionalHosts}}{{if $k }},{{end}}{{$v.host}}={{$v.workspaceId}}{{ end }}
+            - name: "PORTAL_DOMAIN"
+              value: {{ first .Values.portal.portalWildcardDomains | trimPrefix "*" | quote }}
             {{- end }}
             {{- range $v := .Values.registry.envVars }}
             - name: {{ $v.key}}
