@@ -77,6 +77,13 @@ portal:
     - "*.portal.app.speakeasyapi.dev"
   # Provider name (cloudDNS | route53) (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
   provider: cloudDNS
+
+
+  # List of additional portal hostnames.
+  portalAdditionalHosts:
+#  - host: portal.mydomain.com
+#    portalWorkspaceId: myWorkspaceID
+
   # Required properties for cloudDNS
   #project: ""
   #serviceAccountSecretRef:

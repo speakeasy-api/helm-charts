@@ -27,6 +27,9 @@ spec:
         {{- range $v := .Values.portal.portalWildcardDomains }}
         - {{ $v | quote}}
         {{- end }}
+        {{- range $v := .Values.portal.portalAdditionalHosts }}
+        - {{ $v.host | quote}}
+        {{- end }}
         {{- end }}
       secretName: nginx-letsencrypt-registry
   rules:
@@ -100,5 +103,24 @@ spec:
             path: /
             pathType: Prefix
         {{- end }}
+    {{- range $v := .Values.portal.portalAdditionalHosts }}
+    - host: {{ $v.host | quote }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 80
+            path: /v1/
+            pathType: Prefix
+          - backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 83
+            path: /
+            pathType: Prefix
+      {{- end }}
     {{- end }}
 {{- end }}
