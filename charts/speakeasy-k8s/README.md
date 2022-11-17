@@ -101,11 +101,11 @@ registry:
   image:
     tag: 1.0.0
   envVars:
-      - key: POSTGRES_DSN
+      - name: POSTGRES_DSN
         value: postgres://postgres:postgres@34.149.47.53:5432/postgres?sslmode=disable
-      - key: BIGQUERY_PROJECT
+      - name: BIGQUERY_PROJECT
         value: your-gcloud-project
-      - key: BIGQUERY_DSN
+      - name: BIGQUERY_DSN
         value: your-dataset
   ingress:
     enabled: true

@@ -14,7 +14,7 @@ fullnameOverride: ""
 registry:
   # Environment variables to expose in the Speakeasy deployment
   # envVars:
-  #   - key: EXAMPLE_ENV_VAR_KEY
+  #   - name: EXAMPLE_ENV_VAR_KEY
   #     value: EXAMPLE_ENV_VAR_VALUE
   image:
     # Please override with latest stable version
@@ -100,7 +100,7 @@ portal:
   #  name: ""
   #  key: ""
   envVars:
-    - key: SERVER_URL
+    - name: SERVER_URL
       value: https://api.speakeasyapi.dev
 
 bigquery:
