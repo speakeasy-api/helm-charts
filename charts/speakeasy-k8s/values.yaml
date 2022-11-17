@@ -18,7 +18,7 @@ registry:
   #     value: EXAMPLE_ENV_VAR_VALUE
   image:
     # Please override with latest stable version
-    tag: sha-9a7caf8
+    tag: sha-df470c5
   # Secret containing the service account key file for the registry
   # svcSecretName: service-account-secret
   # key in the secret specified in svcSecretName that maps to the service account private key used for the registry
