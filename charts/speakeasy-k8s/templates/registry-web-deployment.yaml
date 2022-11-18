@@ -100,8 +100,7 @@ spec:
               value: {{ first .Values.portal.portalWildcardDomains | trimPrefix "*" | quote }}
             {{- end }}
             {{- range $v := .Values.registry.envVars }}
-            - name: {{ $v.key}}
-              value: {{ $v.value}}
+            - {{ $v | toYaml | indent 14 | trim }}
             {{- end }}
           imagePullPolicy: Always
           livenessProbe:
@@ -147,8 +146,7 @@ spec:
           imagePullPolicy: Always
           env:
             {{- range $v := .Values.portal.envVars }}
-            - name: {{ $v.key}}
-              value: {{ $v.value}}
+            - {{ $v | toYaml | indent 14 | trim }}
             {{- end }}
             - name: "HOST_TO_PORTAL_WORKSPACE_ID"
               value: {{ range $k, $v := .Values.portal.portalAdditionalHosts}}{{if $k }},{{end}}{{$v.host}}={{$v.workspaceId}}{{ end }}
