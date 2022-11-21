@@ -7,8 +7,10 @@ services:
     depends_on:
       - "registry"
       - "web"
+      - "end-user-portal"
     ports:
       - "35291:35291"
+      - "35293:35293"
     networks:
       - speakeasy_charts_network
   registry:
@@ -16,6 +18,7 @@ services:
     environment:
       - SPEAKEASY_ENVIRONMENT=docker
       - POSTGRES_DSN=postgres://postgres:postgres@postgres:5432/registry?sslmode=disable
+      - PORTAL_DOMAIN=.localhost:35291
     volumes:
       - ~/.config/:/root/.config
     ports:
@@ -32,8 +35,6 @@ services:
       - speakeasy_charts_network
     volumes:
       - ~/.config/:/root/.config
-    ports:
-      - "35294:35291"
   embed-fixture:
     image: gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:sha-df470c5
     networks:
@@ -46,10 +47,10 @@ services:
     image: gcr.io/linen-analyst-344721/speakeasy-api/end-user-portal:sha-df470c5
     networks:
       - speakeasy_charts_network
+    environment:
+      SERVER_URL: http://localhost:35290
     volumes:
       - ~/.config/:/root/.config
-    ports:
-      - "35293:35293"
   postgres:
     image: postgres:alpine
     restart: always
