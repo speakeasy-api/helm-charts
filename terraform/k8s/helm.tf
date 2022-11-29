@@ -121,10 +121,11 @@ locals {
 }
 
 resource "helm_release" "speakeasy" {
-  name      = "speakeasy"
-  chart     = "../../charts/speakeasy-k8s"
-  namespace = var.namespace
-  version   = "3.0.0"
+  name       = "speakeasy"
+  chart      = "speakeasy-k8s"
+  repository = "https://speakeasy-api.github.io/helm-charts"
+  namespace  = var.namespace
+  version    = "3.0.0"
 
   set {
     name  = "fullnameOverride"
