@@ -55,8 +55,8 @@ registry:
   # used by managed speakeasy to send invites to the platform. No need to set this value for selfhosted speakeasy
   # sendGridKey: "**********"
 
-  # An optional field that specifies the number of desired Pods for the registry-web-deployment. It defaults to 1.
-  #  replicas: 2
+  # An optional field that specifies the number of desired Pods for the registry-web-deployment.
+  replicas: 2
 
 # Notification Emails for Infrastructure Configuration (e.g. LetsEncrypt)
 # This is the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent to
