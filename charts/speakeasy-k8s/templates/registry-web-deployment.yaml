@@ -107,10 +107,18 @@ spec:
             {{- end }}
           imagePullPolicy: Always
           livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            successThreshold: 1
+            failureThreshold: 3
             httpGet:
               path: /
               port: 35290
           readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            successThreshold: 1
+            failureThreshold: 3
             httpGet:
               path: /
               port: 35290
