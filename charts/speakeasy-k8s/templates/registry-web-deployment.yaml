@@ -110,7 +110,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 15
             successThreshold: 1
-            failureThreshold: 3
+            failureThreshold: 1
             httpGet:
               path: /
               port: 35290
