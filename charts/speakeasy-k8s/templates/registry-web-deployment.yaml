@@ -10,6 +10,9 @@ metadata:
     {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
     {{- end }}
 spec:
+  {{- if .Values.registry.replicas }}
+  replicas: {{.Values.registry.replicas}}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "speakeasy-registry.selectorLabels" . | nindent 6 }}
