@@ -36,6 +36,14 @@ spec:
             - name: GOOGLE_APPLICATION_CREDENTIALS
               value: "/secrets/{{ .Values.registry.svcSecretKey }}"
             {{- end }}
+            {{- if .Values.registry.cache.redisAddr }}
+            - name: REDIS_ADDR
+              value: {{ .Values.registry.cache.redisAddr }}
+            {{- end }}
+            {{- if .Values.registry.cache.redisPassword }}
+            - name: REDIS_PASSWORD
+              value: {{ .Values.registry.cache.redisPassword }}
+            {{- end }}
             - name: POSTGRES_DSN
               value: {{ .Values.postgresql.DSN }}
             - name: POSTHOG_API_KEY
