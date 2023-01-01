@@ -24,6 +24,15 @@ registry:
   # key in the secret specified in svcSecretName that maps to the service account private key used for the registry
   # svcSecretKey: service_account.json
 
+  # Expose an optional cache (via redis API) to increase registry performance.
+  # Cache not expected to be persistent. All cache keys will be set with a suffix of the registry version
+  # Tested with GCP google_redis_instance in HIGH_AVAILABILITY mode maxmemory=1GB maxmemory-policy = "allkeys-lru"
+  cache:
+    # host:port address
+    redisAddr:
+    # optional password
+    redisPassword:
+
   ingress:
     # If true, *Hostnames values below must also be set.
     # Deploys an ingress for the registry API if both the above criteria are met
