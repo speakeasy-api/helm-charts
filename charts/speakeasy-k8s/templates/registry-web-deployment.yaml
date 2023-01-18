@@ -56,14 +56,15 @@ spec:
           imagePullPolicy: Always
         {{- if .Values.registry.cloudsql.enabled }}
         - name: cloud-sql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:1.28.0 # make sure to use the latest version
+          image: gcr.io/cloudsql-docker/gce-proxy:2.0.0 # make sure to use the latest version
           imagePullPolicy: IfNotPresent
           command:
             - "/cloud_sql_proxy"
-            - "-log_debug_stdout"
+            - "--max-sigterm-delay"
+            - "30"
+            - "--credentials-file"
+            - "/secrets/{{ .Values.registry.svcSecretKey }}"
             - "{{ .Values.registry.cloudsql.connectionString }}"
-            - "-term_timeout=30s"
-            - "-credential_file=/secrets/{{ .Values.registry.svcSecretKey }}"
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: 2
@@ -102,9 +103,8 @@ spec:
             - |
              {{- if .Values.registry.cloudsql.enabled }}
               /cloud-sql-proxy \
-                -log_debug_stdout \
-                {{ .Values.registry.cloudsql.connectionString }} \
-                -credential_file=/secrets/{{ .Values.registry.svcSecretKey }} &
+                --credentials-file /secrets/{{ .Values.registry.svcSecretKey }} \
+                {{ .Values.registry.cloudsql.connectionString }} &
              {{- end }}
               ./migrations-cli up
       volumes:
