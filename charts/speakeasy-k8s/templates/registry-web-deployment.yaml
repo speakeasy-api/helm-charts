@@ -1,5 +1,4 @@
 {{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
-{{- $serverVersion := (include "speakeasy-registry.server-version" .) -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,91 +27,7 @@ spec:
         - name: registry
           image: "gcr.io/linen-analyst-344721/speakeasy-api/registry:{{ .Values.registry.image.tag }}"
           env:
-            - name: BIGQUERY_PROJECT
-              value: {{ .Values.bigquery.ProjectID }}
-            - name: BIGQUERY_DATASET
-              value: {{ .Values.bigquery.DatasetID }}
-            {{- if .Values.registry.svcSecretKey }}
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: "/secrets/{{ .Values.registry.svcSecretKey }}"
-            {{- end }}
-            {{- if .Values.registry.cache.redisAddr }}
-            - name: REDIS_ADDR
-              value: {{ .Values.registry.cache.redisAddr }}
-            {{- end }}
-            {{- if .Values.registry.cache.redisPassword }}
-            - name: REDIS_PASSWORD
-              value: {{ .Values.registry.cache.redisPassword }}
-            {{- end }}
-            - name: POSTGRES_DSN
-              value: {{ .Values.postgresql.DSN }}
-            - name: POSTHOG_API_KEY
-              value: phc_PjgvvGVRmAUE4NHxT6pz6VHZ3cmMIM6vM7rkQ04itLf
-            - name: POSTHOG_ENDPOINT
-              value: https://metrics.speakeasyapi.dev
-            - name: SERVER_VERSION
-              value: {{ $serverVersion }}
-            - name: SPEAKEASY_ENVIRONMENT
-              value: {{ .Values.env }}
-            {{- if .Values.auth.SignInURL }}
-            - name: SIGN_IN_URL
-              value: {{ .Values.auth.SignInURL }}
-            {{- end }}
-            - name: CLOUD_PROVIDER
-              value: {{ .Values.cloud }}
-            {{- if .Values.auth.GithubClientId }}
-            - name: GITHUB_CLIENT_ID
-              value: {{ .Values.auth.GithubClientId }}
-            {{- end }}
-            {{- if .Values.auth.GithubCallbackURL  }}
-            - name: GITHUB_CALLBACK_URL
-              value: {{ .Values.auth.GithubCallbackURL }}
-            {{- end }}
-            {{- if .Values.registry.sendGridKey }}
-            - name: SENDGRID_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: send-grid-key-secret
-                  key: sendGridKey
-            {{- end }}
-            {{- if .Values.auth.GithubClientSecretName }}
-            - name: GITHUB_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.auth.GithubClientSecretName }}
-                  key: {{ .Values.auth.GithubClientSecretKey }}
-            {{- end }}
-            - name: JWT_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: jwt-secret-key-secret
-                  key: jwtSecretKey
-            {{- if .Values.datadog.enabled }}
-            - name: DD_ENV
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.labels['tags.datadoghq.com/env']
-            - name: DD_SERVICE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.labels['tags.datadoghq.com/service']
-            - name: DD_VERSION
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.labels['tags.datadoghq.com/version']
-            {{- end }}
-            {{- if .Values.portal.enabled }}
-            - name: "HOST_TO_PORTAL_WORKSPACE_ID"
-              value: {{ range $k, $v := .Values.portal.portalAdditionalHosts}}{{if $k }},{{end}}{{$v.host}}={{$v.workspaceId}}{{ end }}
-            - name: "PORTAL_DOMAIN"
-              value: {{ first .Values.portal.portalWildcardDomains | trimPrefix "*" | quote }}
-            {{- end }}
-            {{- range $v := .Values.registry.envVars }}
-            - {{ $v | toYaml | indent 14 | trim }}
-            {{- end }}
+            {{ include "speakeasy-registry.registryEnvVars" . | indent 12 | trim }}
           imagePullPolicy: Always
           livenessProbe:
             initialDelaySeconds: 15
@@ -132,9 +47,9 @@ spec:
               port: 35290
           {{- if .Values.registry.svcSecretName }}
           volumeMounts:
-          - mountPath: /secrets/
-            name: service-account-credentials
-            readOnly: true
+            - mountPath: /secrets/
+              name: service-account-credentials
+              readOnly: true
           {{- end }}
         - name: web
           image: "gcr.io/linen-analyst-344721/speakeasy-api/web:{{ .Values.registry.image.tag }}"
@@ -153,9 +68,9 @@ spec:
             allowPrivilegeEscalation: false
             runAsUser: 2
           volumeMounts:
-          - mountPath: /secrets/
-            name: service-account-credentials
-            readOnly: true
+            - mountPath: /secrets/
+              name: service-account-credentials
+              readOnly: true
         {{- end }}
         - name: embed
           image: "gcr.io/linen-analyst-344721/speakeasy-api/embed-fixture:{{ .Values.registry.image.tag }}"
@@ -171,10 +86,31 @@ spec:
             - name: "HOST_TO_PORTAL_WORKSPACE_ID"
               value: {{ range $k, $v := .Values.portal.portalAdditionalHosts}}{{if $k }},{{end}}{{$v.host}}={{$v.workspaceId}}{{ end }}
         {{- end }}
+      initContainers:
+        - name: init-registry
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/registry:{{ .Values.registry.image.tag }}"
+          env:
+            {{ include "speakeasy-registry.registryEnvVars" . | indent 12 | trim }}
+          {{- if .Values.registry.svcSecretName }}
+          volumeMounts:
+            - mountPath: /secrets/
+              name: service-account-credentials
+              readOnly: true
+          {{- end }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+             {{- if .Values.registry.cloudsql.enabled }}
+              /cloud-sql-proxy \
+                -log_debug_stdout \
+                {{ .Values.registry.cloudsql.connectionString }} \
+                -credential_file=/secrets/{{ .Values.registry.svcSecretKey }} & ;
+             {{- end }}
+              ./migrations-cli up
       volumes:
-      {{- if .Values.registry.svcSecretName }}
-      - name: service-account-credentials
-        secret:
-          defaultMode: 420
-          secretName: {{ .Values.registry.svcSecretName }}
-      {{- end }}
+        {{- if .Values.registry.svcSecretName }}
+        - name: service-account-credentials
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.registry.svcSecretName }}
+        {{- end }}
