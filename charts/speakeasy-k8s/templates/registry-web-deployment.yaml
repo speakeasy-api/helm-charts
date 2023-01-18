@@ -56,12 +56,12 @@ spec:
           imagePullPolicy: Always
         {{- if .Values.registry.cloudsql.enabled }}
         - name: cloud-sql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:2.0.0 # make sure to use the latest version
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.0.0 # make sure to use the latest version
           imagePullPolicy: IfNotPresent
           command:
-            - "/cloud_sql_proxy"
+            - "/cloud-sql-proxy"
             - "--max-sigterm-delay"
-            - "30"
+            - "30s"
             - "--credentials-file"
             - "/secrets/{{ .Values.registry.svcSecretKey }}"
             - "{{ .Values.registry.cloudsql.connectionString }}"
