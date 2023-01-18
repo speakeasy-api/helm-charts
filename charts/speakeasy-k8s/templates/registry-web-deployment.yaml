@@ -104,7 +104,7 @@ spec:
               /cloud-sql-proxy \
                 -log_debug_stdout \
                 {{ .Values.registry.cloudsql.connectionString }} \
-                -credential_file=/secrets/{{ .Values.registry.svcSecretKey }} & ;
+                -credential_file=/secrets/{{ .Values.registry.svcSecretKey }} &
              {{- end }}
               ./migrations-cli up
       volumes:
