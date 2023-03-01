@@ -1,0 +1,12 @@
+# Redpanda production deployments require xfs filesystem (https://docs.redpanda.com/docs/manage/kubernetes/configure-storage/#use-persistentvolumes)
+# This
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: redpanda-sc
+provisioner: pd.csi.storage.gke.io
+parameters:
+  type: pd-standard
+  csi.storage.k8s.io/fstype: xfs
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true

@@ -66,6 +66,11 @@ app.kubernetes.io/name: {{ include "speakeasy-registry.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "speakeasy-plugins.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "speakeasy-registry.name" . }}-plugins
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
 
 {{/*
 Registry Env Vars
