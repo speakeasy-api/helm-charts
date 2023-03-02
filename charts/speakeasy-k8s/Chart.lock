@@ -15,4 +15,4 @@ dependencies:
   repository: https://charts.redpanda.com
   version: 2.11.0
 digest: sha256:367ec95f96b7a18113e13736d7babc10c8a58a1dee29a531ae44a72bc2174c67
-generated: "2023-02-28T07:41:51.7686-08:00"
+generated: "2023-03-02T10:37:14.379514-08:00"

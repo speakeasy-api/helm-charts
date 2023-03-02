@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: plugins
-          image: "gcr.io/linen-analyst-344721/speakeasy-api/plugins:{{ .Values.registry.image.tag }}"
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/plugins:sha-2cea110"
           imagePullPolicy: Always
   selector:
     matchLabels:

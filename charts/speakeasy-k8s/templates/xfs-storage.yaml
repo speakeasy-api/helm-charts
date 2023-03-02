@@ -4,9 +4,48 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: redpanda-sc
-provisioner: pd.csi.storage.gke.io
+provisioner: kubernetes.io/gce-pd
 parameters:
-  type: pd-standard
-  csi.storage.k8s.io/fstype: xfs
+  type: pd-ssd
+  fstype: xfs
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
+{{- if .Values.persistentDiskId}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redpanda-pv
+spec:
+  capacity:
+    storage: "10Gi"
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: redpanda-sc
+  csi:
+    driver: pd.csi.storage.gke.io
+    volumeHandle: "{{- .Values.persistentDiskId -}}"
+    fsType: xfs
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: label
+              operator: In
+              values:
+                - "select=redpanda-tune"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redpanda-pvc
+spec:
+  storageClassName: redpanda-sc
+  volumeName: redpanda-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+{{- end }}
+

@@ -185,7 +185,16 @@ redpanda:
   storage:
     persistentVolume:
       enabled: true
-      size: 5Gi
+      size: 10Gi
       storageClass: redpanda-sc
+
   external:
     enabled: false
+  tolerations:
+    - key: "redpanda-tuned"
+      value: "true"
+      effect: NoSchedule
+  nodeSelector:
+    select: redpanda-tune
+
+persistentDiskId: ""

@@ -71,6 +71,16 @@ app.kubernetes.io/name: {{ include "speakeasy-registry.name" . }}-plugins
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{/*
+Tolerations
+*/}}
+{{- define "speakeasy-redpanda-tolerations" -}}
+- key: "redpanda-tuned"
+  value: "true"
+  operator: Exists
+  effect: NoSchedule
+{{- end }}
+
 
 {{/*
 Registry Env Vars
