@@ -171,6 +171,8 @@ datadog:
     logs:
       enabled: true
       containerCollectAll: true
+plugins:
+  replicas: 1
 
 redpanda:
   fullnameOverride: redpanda

@@ -10,7 +10,7 @@ metadata:
     {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
     {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.plugins.replicas }}
   template:
     metadata:
       labels:
