@@ -19,7 +19,7 @@ spec:
       containers:
         {{- if .Values.persistentDiskId }}
         - name: startup-script
-          image: "gcr.io/linen-analyst-344721/speakeasy-api/startup-script:sha-d74cb79"
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/startup-script:sha-c2721cd"
           imagePullPolicy: Always
           securityContext:
             privileged: true
@@ -35,7 +35,7 @@ spec:
                 echo done
         {{- end }}
         - name: redpanda-tuner
-          image: "gcr.io/linen-analyst-344721/speakeasy-api/redpanda-tuner:sha-d74cb79"
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/redpanda-tuner:sha-c2721cd"
           securityContext:
             privileged: true
             runAsUser: 0
