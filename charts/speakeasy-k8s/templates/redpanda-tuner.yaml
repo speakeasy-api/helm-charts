@@ -20,7 +20,7 @@ spec:
         {{- if .Values.persistentDiskId }}
         - name: startup-script
           image: "gcr.io/linen-analyst-344721/speakeasy-api/startup-script:sha-c2721cd"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
             runAsUser: 0
@@ -36,6 +36,7 @@ spec:
         {{- end }}
         - name: redpanda-tuner
           image: "gcr.io/linen-analyst-344721/speakeasy-api/redpanda-tuner:sha-c2721cd"
+          imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
             runAsUser: 0

@@ -23,6 +23,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: redpanda-sc
+  persistentVolumeReclaimPolicy: Retain
   csi:
     driver: pd.csi.storage.gke.io
     volumeHandle: "{{- .Values.persistentDiskId -}}"
