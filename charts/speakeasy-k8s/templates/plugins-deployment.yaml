@@ -1,0 +1,30 @@
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plugins
+  labels:
+    service: plugins
+    {{- include "speakeasy-registry.labels" . | nindent 4 }}
+    {{- if .Values.datadog.enabled }}
+    {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.plugins.replicas }}
+  template:
+    metadata:
+      labels:
+        service: plugins
+        {{- include "speakeasy-plugins.selectorLabels" . | nindent 8 }}
+        {{- if .Values.datadog.enabled }}
+        {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: plugins
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/plugins:{{ .Values.registry.image.tag }}"
+          imagePullPolicy: Always
+  selector:
+    matchLabels:
+      service: plugins
+      {{- include "speakeasy-plugins.selectorLabels" . | nindent 6 }}

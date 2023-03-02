@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: redpanda-tuner
+  labels:
+    name: redpanda-tuner
+spec:
+  selector:
+    matchLabels:
+      name: redpanda-tuner
+  template:
+    metadata:
+      labels:
+        name: redpanda-tuner
+    spec:
+      hostPID: true
+      securityContext:
+        runAsUser: 0
+      containers:
+        {{- if .Values.persistentDiskId }}
+        - name: startup-script
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/startup-script:sha-c2721cd"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          env:
+            - name: STARTUP_SCRIPT
+              value: |
+                #! /bin/bash
+                set -o errexit
+                set -o pipefail
+                set -o nounset
+                touch /tmp/foo
+                echo done
+        {{- end }}
+        - name: redpanda-tuner
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/redpanda-tuner:sha-c2721cd"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            runAsUser: 0
+      terminationGracePeriodSeconds: 30
+      tolerations:
+        - key: "redpanda-tuned"
+          operator: Exists
+          effect: NoSchedule
+      nodeSelector:
+        select: redpanda-tune

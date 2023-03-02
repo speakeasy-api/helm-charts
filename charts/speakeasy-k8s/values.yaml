@@ -93,8 +93,8 @@ portal:
 
   # List of additional portal hostnames.
   portalAdditionalHosts:
-#  - host: portal.mydomain.com
-#    portalWorkspaceId: myWorkspaceID
+  #  - host: portal.mydomain.com
+  #    portalWorkspaceId: myWorkspaceID
 
   # Required properties for cloudDNS
   #project: ""
@@ -125,17 +125,17 @@ bigquery:
 
 # Auth required for user management. All values in this block are examples that should be replaced.
 auth:
-  # The full URL to the Speakeasy homepage the user will be redirected to upon signing in
-  # SignInURL: "https://www.selfhostspeakeasy.com"
-  # Client ID of the Github Oauth app
-  # GithubClientId: "b0234253z345c"
-  # Client secret of the Github Oauth app
-  # GithubClientSecret: "*****************"
-  # The callback URL
-  # GithubCallbackURL: "https://api.selfhostspeakeasy.com/v1/auth/callback/github"
+# The full URL to the Speakeasy homepage the user will be redirected to upon signing in
+# SignInURL: "https://www.selfhostspeakeasy.com"
+# Client ID of the Github Oauth app
+# GithubClientId: "b0234253z345c"
+# Client secret of the Github Oauth app
+# GithubClientSecret: "*****************"
+# The callback URL
+# GithubCallbackURL: "https://api.selfhostspeakeasy.com/v1/auth/callback/github"
 
-  # GithubClientSecretName: "github-client-secret"
-  # GithubClientSecretKey: "githubClientSecret"
+# GithubClientSecretName: "github-client-secret"
+# GithubClientSecretKey: "githubClientSecret"
 
 # Postgresql for Speakeasy to store app-specific config and requests from the SDK capture
 postgresql:
@@ -157,18 +157,46 @@ postgresql:
 ingress-nginx:
   enabled: false
   controller:
-      config:
-        use-forwarded-headers: "true"
-        use-http2: "true"
+    config:
+      use-forwarded-headers: "true"
+      use-http2: "true"
 
 # datadog integration is still in progress, do not enable.
 datadog:
   #if true, speakeasy will be monitored using datadog
   enabled: false
   datadog:
-   site: datadoghq.com
-   apiKey: "***********"
-   logs:
-     enabled: true
-     containerCollectAll: true
-     
+    site: datadoghq.com
+    apiKey: "***********"
+    logs:
+      enabled: true
+      containerCollectAll: true
+plugins:
+  replicas: 1
+
+redpanda:
+  fullnameOverride: redpanda
+  tls:
+    enabled: false
+  auth:
+    sasl:
+      enabled: true
+      users:
+        - name: speakeasy
+          password: change_me
+  storage:
+    persistentVolume:
+      enabled: true
+      size: 10Gi
+      storageClass: redpanda-sc
+
+  external:
+    enabled: false
+  tolerations:
+    - key: "redpanda-tuned"
+      value: "true"
+      effect: NoSchedule
+  nodeSelector:
+    select: redpanda-tune
+
+persistentDiskId: ""
