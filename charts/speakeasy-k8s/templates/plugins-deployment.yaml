@@ -26,6 +26,25 @@ spec:
           imagePullPolicy: Always
           env:
             {{ include "speakeasy-registry.registryEnvVars" . | indent 12 | trim }}
+        {{- if .Values.registry.cloudsql.enabled }}
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.0.0 # make sure to use the latest version
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/cloud-sql-proxy"
+            - "--max-sigterm-delay"
+            - "30s"
+            - "--credentials-file"
+            - "/secrets/{{ .Values.registry.svcSecretKey }}"
+            - "{{ .Values.registry.cloudsql.connectionString }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 2
+          volumeMounts:
+            - mountPath: /secrets/
+              name: service-account-credentials
+              readOnly: true
+        {{- end }}
   selector:
     matchLabels:
       service: plugins
