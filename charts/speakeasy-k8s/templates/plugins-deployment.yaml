@@ -45,6 +45,13 @@ spec:
               name: service-account-credentials
               readOnly: true
         {{- end }}
+      volumes:
+        {{- if .Values.registry.svcSecretName }}
+        - name: service-account-credentials
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.registry.svcSecretName }}
+        {{- end }}
   selector:
     matchLabels:
       service: plugins
