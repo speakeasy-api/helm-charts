@@ -180,10 +180,7 @@ redpanda:
     enabled: false
   auth:
     sasl:
-      enabled: true
-      users:
-        - name: speakeasy
-          password: change_me
+      enabled: false
   storage:
     persistentVolume:
       enabled: true
@@ -198,5 +195,3 @@ redpanda:
       effect: NoSchedule
   nodeSelector:
     select: redpanda-tune
-
-persistentDiskId: ""
