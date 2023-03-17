@@ -163,14 +163,8 @@ ingress-nginx:
 
 # datadog integration is still in progress, do not enable.
 datadog:
-  #if true, speakeasy will be monitored using datadog
+  #if true, datadog tags for env/service/version will be added into containers.
   enabled: false
-  datadog:
-    site: datadoghq.com
-    apiKey: "***********"
-    logs:
-      enabled: true
-      containerCollectAll: true
 plugins:
   replicas: 1
 
