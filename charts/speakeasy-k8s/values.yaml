@@ -165,6 +165,7 @@ ingress-nginx:
 datadog:
   #if true, datadog tags for env/service/version will be added into containers.
   enabled: false
+
 plugins:
   replicas: 1
 
@@ -189,3 +190,7 @@ redpanda:
       effect: NoSchedule
   nodeSelector:
     select: redpanda-tune
+
+easycron:
+  worker:
+    replicas: 1
