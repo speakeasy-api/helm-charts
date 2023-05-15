@@ -1,0 +1,39 @@
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-server
+  labels:
+    service: llm-server
+    {{- include "speakeasy-registry.labels" . | nindent 4 }}
+    {{- if .Values.datadog.enabled }}
+    {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.llm-server.replicas }}
+  template:
+    metadata:
+      labels:
+        service: llm-server
+        {{- include "speakeasy-llm-server.selectorLabels" . | nindent 8 }}
+        {{- if .Values.datadog.enabled }}
+        {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: llm-server
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/llm-server:{{ .Values.registry.image.tag }}"
+          imagePullPolicy: Always
+          env:
+            {{ include "speakeasy-registry.registryEnvVars" . | indent 12 | trim }}
+      volumes:
+        {{- if .Values.registry.svcSecretName }}
+        - name: service-account-credentials
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.registry.svcSecretName }}
+        {{- end }}
+  selector:
+    matchLabels:
+      service: llm-server
+      {{- include "speakeasy-llm-server.selectorLabels" . | nindent 6 }}

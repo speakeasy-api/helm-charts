@@ -76,6 +76,11 @@ app.kubernetes.io/name: {{ include "speakeasy-registry.name" . }}-easycron
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "speakeasy-llm-server.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "speakeasy-registry.name" . }}-llm-server
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
 {{/*
 Registry Env Vars
 */}}

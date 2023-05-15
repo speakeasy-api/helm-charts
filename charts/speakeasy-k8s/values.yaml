@@ -194,3 +194,6 @@ redpanda:
 easycron:
   worker:
     replicas: 1
+
+llm-server:
+  replicas: 1
