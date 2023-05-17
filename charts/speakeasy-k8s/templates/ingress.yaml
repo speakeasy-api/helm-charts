@@ -31,6 +31,9 @@ spec:
         - {{ $v.host | quote}}
         {{- end }}
         {{- end }}
+        {{- if .Values.posthogProxy.hostname }}
+        - {{ .Values.posthogProxy.hostname | quote}}
+        {{- end }}
       secretName: nginx-letsencrypt-registry
   rules:
     {{- range $v := .Values.registry.ingress.webHostnames }}
@@ -80,6 +83,18 @@ spec:
                 name: {{ $serviceName }}
                 port:
                   number: 82
+            path: /
+            pathType: Prefix
+    {{- end }}
+    {{- if .Values.posthogProxy.hostname }}
+    - host: {{ .Values.posthogProxy.hostname | quote}}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ .Values.posthogProxy.serviceName | quote}}
+                port:
+                  name: https
             path: /
             pathType: Prefix
     {{- end }}

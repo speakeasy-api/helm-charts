@@ -115,6 +115,10 @@ portal:
     - name: SERVER_URL
       value: https://api.speakeasyapi.dev
 
+posthogProxy:
+  hostname: metrics.speakeasyapi.dev
+  serviceName: speakeasy-posthog-proxy
+
 bigquery:
   # GCP project containing Bigquery bounded/unbounded request tables
   # If this value is specified, these Bigquery tables will store request/response capture data from the configured
