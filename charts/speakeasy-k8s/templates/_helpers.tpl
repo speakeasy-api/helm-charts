@@ -101,7 +101,7 @@ Registry Env Vars
 - name: POSTHOG_API_KEY
   value: phc_hiYSF5Axu49I1xs4Z5BG8KCI3PGNLM8ERRs7eocmfX9
 - name: POSTHOG_ENDPOINT
-  value: https://metrics.dev.speakeasyapi.dev
+  value: https://metrics.{{ ternary (eq .Values.env "prod") "speakeasyapi.dev" (printf "%s.speakeasyapi.dev" .Values.env) }}
 - name: SPEAKEASY_ENVIRONMENT
   value: {{ .Values.env }}
 {{- if .Values.auth.SignInURL }}
