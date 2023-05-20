@@ -1,0 +1,32 @@
+{{- if .Values.posthogProxy.hostname -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "posthog-ingress" }}
+  annotations:
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    cert-manager.io/cluster-issuer: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "letsencrypt" }}
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/upstream-vhost: app.posthog.com
+    nginx.ingress.kubernetes.io/backend-protocol: https
+    # Why configuration-snippet: https://github.com/kubernetes/ingress-nginx/issues/6728
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_ssl_name "app.posthog.com";
+      proxy_ssl_server_name "on";
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.posthogProxy.hostname | quote}}
+      secretName: nginx-letsencrypt-posthog
+  rules:
+    - host: {{ .Values.posthogProxy.hostname | quote}}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: {{ .Values.posthogProxy.serviceName | quote}}
+                port:
+                  name: https
+{{- end}}
