@@ -14,10 +14,10 @@ fullnameOverride: ""
 registry:
   # Environment variables to expose in the Speakeasy deployment
   envVars:
-  - name: POSTHOG_API_KEY
-    value: phc_hiYSF5Axu49I1xs4Z5BG8KCI3PGNLM8ERRs7eocmfX9
-  - name: POSTHOG_ENDPOINT
-    value: metrics.speakeasyapi.dev
+    - name: POSTHOG_API_KEY
+      value: phc_hiYSF5Axu49I1xs4Z5BG8KCI3PGNLM8ERRs7eocmfX9
+    - name: POSTHOG_ENDPOINT
+      value: metrics.speakeasyapi.dev
   image:
     # Please override with latest stable version
     tag: sha-df470c5
