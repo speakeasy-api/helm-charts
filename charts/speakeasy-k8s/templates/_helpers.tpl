@@ -98,10 +98,6 @@ Registry Env Vars
 {{- end }}
 - name: POSTGRES_DSN
   value: {{ .Values.postgresql.DSN }}
-- name: POSTHOG_API_KEY
-  value: phc_hiYSF5Axu49I1xs4Z5BG8KCI3PGNLM8ERRs7eocmfX9
-- name: POSTHOG_ENDPOINT
-  value: {{ if eq .Values.env "prod" }}https://metrics.speakeasyapi.dev{{ else }}{{ printf "https://metrics.%s.speakeasyapi.dev" .Values.env }}{{ end }}
 - name: SPEAKEASY_ENVIRONMENT
   value: {{ .Values.env }}
 {{- if .Values.auth.SignInURL }}
