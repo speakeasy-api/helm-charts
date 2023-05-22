@@ -74,6 +74,7 @@ registry:
 # createClusterIssuer : true
 cert-manager:
   enabled: false
+  installCRDs: true
   podDnsPolicy: None
   podDnsConfig:
     nameservers:
