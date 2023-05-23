@@ -71,7 +71,7 @@ registry:
 # This is the email updates to manage the LetsEncrypt certificate (90 day expiration) will be sent to
 # notificationEmail: "anuraag@speakeasyapi.dev"
 # when cert-manager is enabled a cluster issuer will be created. If you want to create the cluster issuer even if cert-manager is disabled (i.e. you installed cert-manager some other way) then set this to true
-# createClusterIssuer : true
+createCertManagerResources: true
 cert-manager:
   enabled: false
   installCRDs: true
@@ -81,7 +81,6 @@ cert-manager:
       - 8.8.8.8
       - 1.1.1.1
       - 208.67.222.222
-
 portal:
   enabled: true
   # The wildcard domain that will route to the self-serve portal

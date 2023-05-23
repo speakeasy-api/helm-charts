@@ -143,7 +143,7 @@ resource "helm_release" "speakeasy" {
   }
 
   set {
-    name  = "createClusterIssuer"
+    name  = "createCertManagerResources"
     value = var.ingressNginxEnabled ? "true" : "false"
   }
 

@@ -1,4 +1,4 @@
-{{- if or (index .Values "cert-manager" "enabled") .Values.createClusterIssuer -}}
+{{- if or (index .Values "cert-manager" "enabled") .Values.createCertManagerResources -}}
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -44,7 +44,6 @@ spec:
           - {{ $v | quote }}
         {{- end }}
   {{- end }}
-{{- end }}
 ---
 {{- if .Values.portal.enabled }}
 apiVersion: cert-manager.io/v1
@@ -61,4 +60,5 @@ spec:
   {{- range $v :=  .Values.portal.portalWildcardDomains }}
   - {{ $v | quote }}
   {{- end }}
+{{- end }}
 {{- end }}
