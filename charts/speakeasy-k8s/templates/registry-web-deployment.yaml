@@ -12,6 +12,9 @@ spec:
   {{- if .Values.registry.replicas }}
   replicas: {{.Values.registry.replicas}}
   {{- end }}
+  {{- if .Values.registry.deployment }}
+  {{ .Values.registry.deployment | toYaml | nindent 2 | trim }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "speakeasy-registry.selectorLabels" . | nindent 6 }}
