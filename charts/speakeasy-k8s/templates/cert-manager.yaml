@@ -43,6 +43,7 @@ spec:
         {{- range $v :=  .Values.portal.portalWildcardDomains }}
           - {{ $v | quote }}
         {{- end }}
+          - {{ .Values.posthogProxy.hostname | quote}}
   {{- end }}
 ---
 {{- if .Values.portal.enabled }}
