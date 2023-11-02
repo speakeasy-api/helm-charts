@@ -10,7 +10,7 @@ metadata:
     {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
     {{- end }}
 spec:
-  replicas: 0
+  replicas: 1
   {{- if .Values.easycron.scheduler.deployment }}
   {{ .Values.easycron.scheduler.deployment | toYaml | nindent 2 | trim }}
   {{- end }}
