@@ -207,7 +207,7 @@ redpanda:
 
 easycron:
   worker:
-    replicas: 0
+    replicas: 1
     # Use this to customise the easycron worker deployment
     deployment:
       strategy:
