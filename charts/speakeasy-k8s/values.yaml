@@ -175,36 +175,6 @@ datadog:
   #if true, datadog tags for env/service/version will be added into containers.
   enabled: false
 
-plugins:
-  replicas: 1
-  # Use this to customise the speakeasy-plugins deployment
-  deployment:
-    strategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxSurge: 1
-redpanda:
-  fullnameOverride: redpanda
-  tls:
-    enabled: false
-  auth:
-    sasl:
-      enabled: false
-  storage:
-    persistentVolume:
-      enabled: true
-      size: 10Gi
-      storageClass: redpanda-sc
-
-  external:
-    enabled: false
-  tolerations:
-    - key: "redpanda-tuned"
-      value: "true"
-      effect: NoSchedule
-  nodeSelector:
-    select: redpanda-tune
-
 easycron:
   worker:
     replicas: 1
