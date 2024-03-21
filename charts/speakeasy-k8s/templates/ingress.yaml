@@ -24,9 +24,6 @@ spec:
         {{- range $v := .Values.registry.ingress.webHostnames }}
         - {{ $v }}
         {{- end }}
-        {{- range $v := .Values.registry.ingress.embedFixtureHostnames }}
-        - {{ $v }}
-        {{- end }}
         {{- if .Values.portal.enabled }}
         {{- range $v := .Values.portal.portalWildcardDomains }}
         - {{ $v | quote}}
@@ -65,25 +62,6 @@ spec:
                 name: {{ $serviceName }}
                 port:
                   number: 80
-            path: /
-            pathType: Prefix
-    {{- end }}
-    {{- range $v := .Values.registry.ingress.embedFixtureHostnames }}
-    - host: {{ $v }}
-      http:
-        paths:
-          - backend:
-              service:
-                name: {{ $serviceName }}
-                port:
-                  number: 80
-            path: /v1/
-            pathType: Prefix
-          - backend:
-              service:
-                name: {{ $serviceName }}
-                port:
-                  number: 82
             path: /
             pathType: Prefix
     {{- end }}

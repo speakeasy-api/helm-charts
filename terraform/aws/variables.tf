@@ -42,12 +42,6 @@ variable "grpcHostnames" {
   description = "List of domain names for gRPC service used for request capture. Setting this var only makes sense if `ingressNginxEnabled` is set to true. If `ingressNginxEnabled` is set to true and `domain` is not set then this variable can't be null. If `ingressNginxEnabled` is set to true and `domain` is set as well then the modules will set the hostnames for you (grpc.<DOMAIN> will be the grpc hostname)"
 }
 
-variable "embedFixtureHostnames" {
-  type        = list(string)
-  default     = null
-  description = "List of domain names for registry embed-fixture UI. Setting this var only makes sense if `ingressNginxEnabled` is set to true. If `ingressNginxEnabled` is set to true and `domain` is not set then this variable can't be null. If `ingressNginxEnabled` is set to true and `domain` is set as well then the modules will set the hostnames for you (embed.<DOMAIN> will be the embed hostname)"
-}
-
 variable "createK8sPostgres" {
   type        = bool
   default     = false

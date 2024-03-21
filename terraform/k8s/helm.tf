@@ -222,11 +222,6 @@ resource "helm_release" "speakeasy" {
     value = var.grpcHostnames == null ? "" : "{${join(",", var.grpcHostnames)}}"
   }
 
-  set {
-    name  = "registry.ingress.embedFixtureHostnames"
-    value = var.embedFixtureHostnames == null ? "" : "{${join(",", var.embedFixtureHostnames)}}"
-  }
-
   depends_on = [
     helm_release.ingress_nginx, helm_release.cert_manager, kubernetes_secret.registry_service_account_secret
   ]

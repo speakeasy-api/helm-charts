@@ -52,7 +52,6 @@ resource "aws_route53_record" "web_dns_record" {
 }
 
 resource "aws_route53_record" "embed_dns_record" {
-  for_each = toset(local.embedFixtureHostnames == null ? [] : local.embedFixtureHostnames)
   zone_id  = aws_route53_zone.speakeasy_dns_zone[0].zone_id
   name     = each.value
   type     = "A"
