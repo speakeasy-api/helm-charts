@@ -44,13 +44,3 @@ resource "google_dns_record_set" "web_dns_record" {
   rrdatas = [module.speakeasy_k8s.nginx_loadbalancer_ip_or_hostname]
 }
 
-resource "google_dns_record_set" "embed_dns_record" {
-  for_each = toset(local.embedFixtureHostnames == null ? [] : local.embedFixtureHostnames)
-  name     = "${each.value}."
-  type     = "A"
-  ttl      = 300
-
-  managed_zone = google_dns_managed_zone.speakeasy_dns_zone[0].name
-
-  rrdatas = [module.speakeasy_k8s.nginx_loadbalancer_ip_or_hostname]
-}

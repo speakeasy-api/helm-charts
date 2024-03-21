@@ -30,12 +30,6 @@ variable "grpcHostnames" {
   description = "List of domain names for gRPC service used for request capture. You must set this variable if `ingressNginxEnabled` is set to true."
 }
 
-variable "embedFixtureHostnames" {
-  type        = list(string)
-  default     = null
-  description = "List of domain names for registry embed-fixture UI. You must set this variable if `ingressNginxEnabled` is set to true."
-}
-
 variable "createK8sPostgres" {
   type        = bool
   default     = false
