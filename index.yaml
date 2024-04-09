@@ -3,6 +3,29 @@ entries:
   speakeasy-k8s:
   - apiVersion: v2
     appVersion: 1.1.1-sha-350241f
+    created: "2024-04-09T19:04:19.655638832Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 11.6.24
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.6.1
+    - condition: ingress-nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.0.13
+    description: Speakeasy API Platform deployed on K8s.
+    digest: 9951b80b39f65812c9874fe75be5203a9d0385f15d982a499a1cfbf5b3df1aca
+    name: speakeasy-k8s
+    type: application
+    urls:
+    - https://github.com/speakeasy-api/helm-charts/releases/download/speakeasy-k8s-5.0.2/speakeasy-k8s-5.0.2.tgz
+    version: 5.0.2
+  - apiVersion: v2
+    appVersion: 1.1.1-sha-350241f
     created: "2024-03-21T10:47:49.838374865Z"
     dependencies:
     - condition: postgresql.enabled
@@ -1263,4 +1286,4 @@ entries:
     urls:
     - https://github.com/speakeasy-api/helm-charts/releases/download/speakeasy-k8s-1.0.0/speakeasy-k8s-1.0.0.tgz
     version: 1.0.0
-generated: "2024-03-21T10:47:49.838675793Z"
+generated: "2024-04-09T19:04:19.655936474Z"
