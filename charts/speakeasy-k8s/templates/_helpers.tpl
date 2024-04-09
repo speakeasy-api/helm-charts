@@ -72,8 +72,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "speakeasy-temporalworker.selectorLabels" -}}
-  app.kubernetes.io/name: {{ include "speakeasy-registry.name" . }}-temporalworker
-  app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: {{ include "speakeasy-registry.name" . }}-temporalworker
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
