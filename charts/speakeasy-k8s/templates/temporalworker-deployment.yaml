@@ -27,6 +27,8 @@ spec:
         - name: temporalworker
           image: "gcr.io/linen-analyst-344721/speakeasy-api/temporalworker:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
+          command:
+            - "/temporalworker"
           env:
             {{ include "speakeasy-registry.registryEnvVars" . | indent 12 | trim }}
         {{- if .Values.registry.cloudsql.enabled }}
