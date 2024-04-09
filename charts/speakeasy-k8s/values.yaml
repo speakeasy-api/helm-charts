@@ -170,6 +170,15 @@ datadog:
   #if true, datadog tags for env/service/version will be added into containers.
   enabled: false
 
+temporalworker:
+  replicas: 1
+  # Use this to customise the temporalworker worker deployment
+  deployment:
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+
 easycron:
   worker:
     replicas: 1

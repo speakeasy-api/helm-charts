@@ -1,0 +1,63 @@
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temporalworker
+  labels:
+    service: temporalworker
+    {{- include "speakeasy-registry.labels" . | nindent 4 }}
+    {{- if .Values.datadog.enabled }}
+    {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.temporalworker.replicas }}
+  {{- if .Values.temporalworker.deployment }}
+  {{ .Values.temporalworker.deployment | toYaml | nindent 2 | trim }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        service: temporalworker
+        {{- include "speakeasy-temporalworker.selectorLabels" . | nindent 8 }}
+        {{- if .Values.datadog.enabled }}
+        {{- include "speakeasy-registry.datadog-labels" (dict "env" .Values.env "service" $serviceName "version" "TBD" ) | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: temporalworker
+          image: "gcr.io/linen-analyst-344721/speakeasy-api/temporalworker:{{ .Values.registry.image.tag }}"
+          imagePullPolicy: Always
+          command:
+            - "/temporalworker"
+          env:
+            {{ include "speakeasy-registry.registryEnvVars" . | indent 12 | trim }}
+        {{- if .Values.registry.cloudsql.enabled }}
+        - name: cloud-sql-proxy
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.0.0 # make sure to use the latest version
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/cloud-sql-proxy"
+            - "--max-sigterm-delay"
+            - "30s"
+            - "--credentials-file"
+            - "/secrets/{{ .Values.registry.svcSecretKey }}"
+            - "{{ .Values.registry.cloudsql.connectionString }}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 2
+          volumeMounts:
+            - mountPath: /secrets/
+              name: service-account-credentials
+              readOnly: true
+        {{- end }}
+      volumes:
+        {{- if .Values.registry.svcSecretName }}
+        - name: service-account-credentials
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.registry.svcSecretName }}
+        {{- end }}
+  selector:
+    matchLabels:
+      service: temporalworker
+      {{- include "speakeasy-temporalworker.selectorLabels" . | nindent 6 }}
