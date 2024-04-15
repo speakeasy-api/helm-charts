@@ -10,6 +10,7 @@ metadata:
     cert-manager.io/cluster-issuer: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "letsencrypt" }}
     acme.cert-manager.io/http01-edit-in-place: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: 10m
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 64k
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
