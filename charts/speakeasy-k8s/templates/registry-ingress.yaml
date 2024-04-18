@@ -1,0 +1,66 @@
+{{- if and .Values.registry.ingress.enabled (gt (len .Values.registry.ingress.registryHostnames) 0) (gt (len .Values.registry.ingress.webHostnames) 0) }}
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "registry-ingress" }}
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "letsencrypt" }}
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      set_by_lua_block $resourcePath {
+        local path = ngx.var.request_uri
+        local regExpression1 = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<imageRef>[^:@]+):(?<tag>.+)$"
+        local regExpression2 = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<imageRef>[^@]+)@(?<digest>.+)$"
+
+        local matches1 = ngx.re.match(path, regExpression1)
+        if matches1 then
+          local orgSlug = matches1["orgSlug"]
+          local workspaceSlug = matches1["workspaceSlug"]
+          local imageName = matches1["imageRef"]
+          local tag = matches1["tag"]
+          {{- with (first .Values.registry.ingress.webHostnames) }}
+          return "https://{{ . }}/org/" .. orgSlug .. "/" .. workspaceSlug .. "/apis/" .. imageName .. "?tags=" .. tag
+          {{- end }}
+        end
+
+        local matches2 = ngx.re.match(path, regExpression2)
+        if matches2 then
+          local orgSlug = matches2["orgSlug"]
+          local workspaceSlug = matches2["workspaceSlug"]
+          local imageName = matches2["imageRef"]
+          local digest = matches2["digest"]
+          {{- with (first .Values.registry.ingress.webHostnames) }}
+          return "https://{{ . }}/org/" .. orgSlug .. "/" .. workspaceSlug .. "/apis/" .. imageName .. "/" .. digest
+          {{- end }}
+        end
+        {{- with (first .Values.registry.ingress.webHostnames) }}
+        return "https://{{ . }}/"
+        {{- end }}
+      }
+
+      rewrite "^/(.*)$" $resourcePath redirect;
+  labels:
+    app.kubernetes.io/name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "registry-ingress" }}
+spec:
+  tls:
+    - hosts:
+    {{- range $v := .Values.registry.ingress.registryHostnames }}
+        - {{ $v }}
+    {{- end }}
+      secretName: nginx-letsencrypt-registry-rewriter
+  rules:
+  {{- range $v := .Values.registry.ingress.registryHostnames }}
+    - host: {{ $v }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 80
+  {{- end }}
+{{- end }}

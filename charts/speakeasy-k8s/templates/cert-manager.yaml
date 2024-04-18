@@ -43,10 +43,15 @@ spec:
         {{- range $v :=  .Values.portal.portalWildcardDomains }}
           - {{ $v | quote }}
         {{- end }}
+        {{- range $v := .Values.registry.ingress.registryHostnames }}
+          - {{ $v | quote }}
+        {{- end }}
+        {{- if .Values.posthogProxy.hostname -}}
           - {{ .Values.posthogProxy.hostname | quote}}
+        {{- end}}
   {{- end }}
 ---
-{{- if .Values.portal.enabled }}
+{{- if  .Values.portal.enabled }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
