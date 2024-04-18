@@ -32,7 +32,7 @@ metadata:
           local imageName = matches2["imageRef"]
           local digest = matches2["digest"]
           {{- with (first .Values.registry.ingress.webHostnames) }}
-          return "https://{{ . }}/org/" .. orgSlug .. "/" .. workspaceSlug .. "/apis/" .. imageName .. "/" .. digest
+          return "https://{{ . }}/org/" .. orgSlug .. "/" .. workspaceSlug .. "/apis/" .. imageName .. "/sha256:" .. digest
           {{- end }}
         end
         {{- with (first .Values.registry.ingress.webHostnames) }}
