@@ -46,7 +46,7 @@ spec:
         {{- range $v := .Values.registry.ingress.registryHostnames }}
           - {{ $v | quote }}
         {{- end }}
-        {{- if .Values.posthogProxy.hostname -}}
+        {{- if .Values.posthogProxy.hostname }}
           - {{ .Values.posthogProxy.hostname | quote}}
         {{- end}}
   {{- end }}
