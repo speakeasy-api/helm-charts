@@ -13,6 +13,8 @@ metadata:
         local path = ngx.var.request_uri
         local regExpression1 = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<imageRef>[^:@]+):(?<tag>.+)$"
         local regExpression2 = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<imageRef>[^@]+)@(?<digest>.+)$"
+        local regExpression3 = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<imageRef>[^:@]+)$"
+
 
         local matches1 = ngx.re.match(path, regExpression1)
         if matches1 then
@@ -35,6 +37,17 @@ metadata:
           return "https://{{ . }}/org/" .. orgSlug .. "/" .. workspaceSlug .. "/apis/" .. imageName .. "/" .. digest
           {{- end }}
         end
+
+        local matches3 = ngx.re.match(path, regExpression3)
+        if matches3 then
+          local orgSlug = matches3["orgSlug"]
+          local workspaceSlug = matches3["workspaceSlug"]
+          local imageName = matches3["imageRef"]
+          {{- with (first .Values.registry.ingress.webHostnames) }}
+          return "https://{{ . }}/org/" .. orgSlug .. "/" .. workspaceSlug .. "/apis/" .. imageName
+          {{- end }}
+        end
+
         {{- with (first .Values.registry.ingress.webHostnames) }}
         return "https://{{ . }}/"
         {{- end }}
