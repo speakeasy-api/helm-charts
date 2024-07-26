@@ -150,12 +150,6 @@ Registry Env Vars
       apiVersion: v1
       fieldPath: metadata.labels['tags.datadoghq.com/version']
 {{- end }}
-{{- if .Values.portal.enabled }}
-- name: "HOST_TO_PORTAL_WORKSPACE_ID"
-  value: {{ range $k, $v := .Values.portal.portalAdditionalHosts}}{{if $k }},{{end}}{{$v.host}}={{$v.workspaceId}}{{ end }}
-- name: "PORTAL_DOMAIN"
-  value: {{ first .Values.portal.portalWildcardDomains | trimPrefix "*" | quote }}
-{{- end }}
 {{- range $v := .Values.registry.envVars }}
 - {{ $v | toYaml | nindent 2 | trim }}
 {{- end }}

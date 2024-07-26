@@ -82,39 +82,12 @@ cert-manager:
       - 8.8.8.8
       - 1.1.1.1
       - 208.67.222.222
-portal:
-  enabled: true
-  # The wildcard domain that will route to the self-serve portal
-  portalWildcardDomains:
-    - "*.portal.app.speakeasyapi.dev"
-  # Provider name (cloudDNS | route53) (https://github.com/bitnami/charts/tree/main/bitnami/external-dns)
+dns:
   provider: cloudDNS
-
-
-  # List of additional portal hostnames.
-  portalAdditionalHosts:
-  #  - host: portal.mydomain.com
-  #    portalWorkspaceId: myWorkspaceID
-
-  # Required properties for cloudDNS
-  #project: ""
-  #serviceAccountSecretRef:
-  #  name:""
-  #  key: ""
-  # Required properties for route53
-  #region: us-east-1
-  #role: ""
-  # Required properties for route53 with ambient credentials
-  #hostedZoneID: ""
-  # Required properties for route53 with explicit credentials
-  #secretKeyID: ""
-  #secretAccessKeySecret:
-  #  name: ""
-  #  key: ""
-  envVars:
-    - name: SERVER_URL
-      value: https://api.speakeasyapi.dev
-
+  project: ""
+  serviceAccountSecretRef:
+    name: dns01-service-account-secret
+    key: "credentials.json"
 posthogProxy:
   hostname: metrics.speakeasyapi.dev
   serviceName: speakeasy-posthog-proxy
