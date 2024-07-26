@@ -158,11 +158,6 @@ resource "helm_release" "speakeasy" {
   }
 
   set {
-    name  = "portal.enabled"
-    value = "false"
-  }
-
-  set {
     name  = "auth.SignInURL"
     value = var.signInURL == null ? "" : var.signInURL
   }

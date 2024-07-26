@@ -15,56 +15,34 @@ spec:
     - http01:
         ingress:
           class: nginx
-  {{- if .Values.portal.enabled }}
     - dns01:
-        {{ .Values.portal.provider }}:
-        {{- if eq .Values.portal.provider "cloudDNS" }}
-          project: {{ .Values.portal.project }}
+        {{ .Values.dns.provider }}:
+        {{- if eq .Values.dns.provider "cloudDNS" }}
+          project: {{ .Values.dns.project }}
           serviceAccountSecretRef:
-          {{- range $k, $v := .Values.portal.serviceAccountSecretRef }}
+          {{- range $k, $v := .Values.dns.serviceAccountSecretRef }}
             {{ $k }}: {{ $v }}
           {{- end }}
         {{- end }}
-        {{- if eq .Values.portal.provider "route53" }}
-          region: {{ .Values.portal.region }}
-          role: {{ .Values.portal.role }}
-        {{- if .Values.portal.hostedZoneID }}
-          hostedZoneId: {{ .Values.portal.hostedZoneID }}
+        {{- if eq .Values.dns.provider "route53" }}
+          region: {{ .Values.dns.region }}
+          role: {{ .Values.dns.role }}
+        {{- if .Values.dns.hostedZoneID }}
+          hostedZoneId: {{ .Values.dns.hostedZoneID }}
         {{- else }}
-          accessKeyId: {{ .Values.portal.accessKeyID }}
+          accessKeyId: {{ .Values.dns.accessKeyID }}
           secretAccessKeySecretRef:
-          {{- range $k, $v := .Values.portal.secretAccessKeySecretRef }}
+          {{- range $k, $v := .Values.dns.secretAccessKeySecretRef }}
           {{ $k }}: {{ $v }}
           {{- end}}
         {{- end }}
         {{- end }}
       selector:
         dnsNames:
-        {{- range $v :=  .Values.portal.portalWildcardDomains }}
-          - {{ $v | quote }}
-        {{- end }}
         {{- range $v := .Values.registry.ingress.registryHostnames }}
           - {{ $v | quote }}
         {{- end }}
         {{- if .Values.posthogProxy.hostname }}
           - {{ .Values.posthogProxy.hostname | quote}}
         {{- end}}
-  {{- end }}
----
-{{- if  .Values.portal.enabled }}
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "dns01" }}
-  namespace: {{ .Values.env }}
-spec:
-  secretName: portal-com-tls
-  issuerRef:
-    name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "letsencrypt" }}
-    kind: ClusterIssuer
-  dnsNames:
-  {{- range $v :=  .Values.portal.portalWildcardDomains }}
-  - {{ $v | quote }}
-  {{- end }}
-{{- end }}
 {{- end }}

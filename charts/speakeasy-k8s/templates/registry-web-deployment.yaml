@@ -76,17 +76,6 @@ spec:
               name: service-account-credentials
               readOnly: true
         {{- end }}
-        {{- if .Values.portal.enabled }}
-        - name: end-user-portal
-          image: "gcr.io/linen-analyst-344721/speakeasy-api/end-user-portal:{{ .Values.registry.image.tag }}"
-          imagePullPolicy: Always
-          env:
-            {{- range $v := .Values.portal.envVars }}
-            - {{ $v | toYaml | indent 14 | trim }}
-            {{- end }}
-            - name: "HOST_TO_PORTAL_WORKSPACE_ID"
-              value: {{ range $k, $v := .Values.portal.portalAdditionalHosts}}{{if $k }},{{end}}{{$v.host}}={{$v.workspaceId}}{{ end }}
-        {{- end }}
       initContainers:
         - name: init-registry
           image: "gcr.io/linen-analyst-344721/speakeasy-api/registry:{{ .Values.registry.image.tag }}"
