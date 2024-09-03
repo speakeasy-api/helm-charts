@@ -1,4 +1,4 @@
-{{- if .Values.posthogProxy.hostname -}}
+{{- if gt (len .Values.posthogProxy.hosts) 0 -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -16,10 +16,13 @@ metadata:
 spec:
   tls:
     - hosts:
-        - {{ .Values.posthogProxy.hostname | quote}}
+        {{- range $v := .Values.posthogProxy.hosts }}
+        - {{ $v | quote }}
+        {{- end }}
       secretName: nginx-letsencrypt-posthog
   rules:
-    - host: {{ .Values.posthogProxy.hostname | quote}}
+    {{- range $v := .Values.posthogProxy.hosts }}
+    - host: {{ $v | quote}}
       http:
         paths:
           - pathType: Prefix
@@ -29,4 +32,5 @@ spec:
                 name: {{ .Values.posthogProxy.serviceName | quote}}
                 port:
                   name: https
+    {{- end }}
 {{- end}}

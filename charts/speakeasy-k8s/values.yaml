@@ -89,9 +89,9 @@ dns:
     name: dns01-service-account-secret
     key: "credentials.json"
 posthogProxy:
-  hostname: metrics.speakeasyapi.dev
+  hosts:
+    - "metrics.speakeasyapi.dev"
   serviceName: speakeasy-posthog-proxy
-
 bigquery:
   # GCP project containing Bigquery bounded/unbounded request tables
   # If this value is specified, these Bigquery tables will store request/response capture data from the configured
