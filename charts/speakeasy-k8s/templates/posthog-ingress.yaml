@@ -1,4 +1,5 @@
 {{- if gt (len .Values.posthogProxy.hosts) 0 -}}
+{{- $serviceName := .Values.posthogProxy.serviceName -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -29,7 +30,7 @@ spec:
             path: /
             backend:
               service:
-                name: {{ .Values.posthogProxy.serviceName | quote}}
+                name: {{ $serviceName | quote}}
                 port:
                   name: https
     {{- end }}
