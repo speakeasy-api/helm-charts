@@ -27,6 +27,12 @@ spec:
         - name: temporalworker
           image: "gcr.io/linen-analyst-344721/speakeasy-api/temporalworker:{{ .Values.registry.image.tag }}"
           imagePullPolicy: Always
+          {{ - if .Values.registry.svcSecretName }}
+          volumeMounts:
+            - mountPath: /secrets/
+              name: service-account-credentials
+              readOnly: true
+          {{ - end }}
           command:
             - "/temporalworker"
           env:
