@@ -123,6 +123,11 @@ Registry Env Vars
       name: {{ .Values.auth.GithubClientSecretName }}
       key: {{ .Values.auth.GithubClientSecretKey }}
 {{- end }}
+- name: ARTIFACTS_PROXY_SIGNING_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: artifacts-proxy-signing-secret
+      key: token
 - name: JWT_SECRET_KEY
   valueFrom:
     secretKeyRef:
