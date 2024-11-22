@@ -1,0 +1,54 @@
+{{- if and .Values.registry.ingress.enabled (gt (len .Values.registry.ingress.specsHostnames) 0) (gt (len .Values.registry.ingress.webHostnames) 0) (gt (len .Values.registry.ingress.apiHostnames) 0) }}
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "spec-service" -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "specs-ingress" }}
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "letsencrypt" }}
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      set_by_lua_block $resourcePath {
+        local path = ngx.var.request_uri
+        local regExpression = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<imageRef>[^$]+)"
+
+        local matches = ngx.re.match(path, regExpression)
+        if matches then
+          local orgSlug = matches1["orgSlug"]
+          local workspaceSlug = matches1["workspaceSlug"]
+          local imageRef = matches1["imageRef"]
+          {{- with (first .Values.registry.ingress.apiHostnames) }}
+          return "https://{{ . }}/v1/public/" .. orgSlug .. "/" .. workspaceSlug .. "/" .. imageRef
+          {{- end }}
+        end
+
+        {{- with (first .Values.registry.ingress.webHostnames) }}
+        return "https://{{ . }}/"
+        {{- end }}
+      }
+
+      rewrite "^/(.*)$" $resourcePath redirect;
+  labels:
+    app.kubernetes.io/name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "specs-ingress" }}
+spec:
+  tls:
+    - hosts:
+    {{- range $v := .Values.registry.ingress.specsHostnames }}
+        - {{ $v }}
+    {{- end }}
+      secretName: nginx-letsencrypt-registry-rewriter
+  rules:
+  {{- range $v := .Values.registry.ingress.specsHostnames }}
+    - host: {{ $v }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: 80
+  {{- end }}
+{{- end }}
