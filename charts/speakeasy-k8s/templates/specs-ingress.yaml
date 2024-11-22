@@ -1,5 +1,5 @@
 {{- if and .Values.registry.ingress.enabled (gt (len .Values.registry.ingress.specsHostnames) 0) (gt (len .Values.registry.ingress.webHostnames) 0) (gt (len .Values.registry.ingress.apiHostnames) 0) }}
-{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "spec-service" -}}
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "specs-service" -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
