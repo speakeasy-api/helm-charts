@@ -42,6 +42,9 @@ spec:
         {{- range $v := .Values.registry.ingress.registryHostnames }}
           - {{ $v | quote }}
         {{- end }}
+        {{- range $v := .Values.registry.ingress.specsHostnames }}
+          - {{ $v | quote }}
+        {{- end }}
         {{- range $v := .Values.posthogProxy.hosts }}
           - {{ $v | quote}}
         {{- end}}
