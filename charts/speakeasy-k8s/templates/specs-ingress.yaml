@@ -11,13 +11,13 @@ metadata:
     nginx.ingress.kubernetes.io/configuration-snippet: |
       set_by_lua_block $resourcePath {
         local path = ngx.var.request_uri
-        local regExpression = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<imageRef>[^$]+)"
+        local regExpression = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<f>[^$]+)"
 
         local matches = ngx.re.match(path, regExpression)
         if matches then
-          local orgSlug = matches1["orgSlug"]
-          local workspaceSlug = matches1["workspaceSlug"]
-          local imageRef = matches1["imageRef"]
+          local orgSlug = matches["orgSlug"]
+          local workspaceSlug = matches["workspaceSlug"]
+          local imageRef = matches["imageRef"]
           {{- with (first .Values.registry.ingress.apiHostnames) }}
           return "https://{{ . }}/v1/public/" .. orgSlug .. "/" .. workspaceSlug .. "/" .. imageRef
           {{- end }}
