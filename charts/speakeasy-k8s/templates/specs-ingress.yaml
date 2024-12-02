@@ -11,7 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/configuration-snippet: |
       set_by_lua_block $resourcePath {
         local path = ngx.var.request_uri
-        local regExpression = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<f>[^$]+)"
+        local regExpression = "^/(?<orgSlug>[^/]+)/(?<workspaceSlug>[^/]+)/(?<imageRef>[^$]+)"
 
         local matches = ngx.re.match(path, regExpression)
         if matches then
