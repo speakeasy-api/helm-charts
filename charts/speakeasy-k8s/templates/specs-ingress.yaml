@@ -37,7 +37,7 @@ spec:
     {{- range $v := .Values.registry.ingress.specsHostnames }}
         - {{ $v }}
     {{- end }}
-      secretName: nginx-letsencrypt-registry-rewriter
+      secretName: nginx-letsencrypt-registry-specRewriter
   rules:
   {{- range $v := .Values.registry.ingress.specsHostnames }}
     - host: {{ $v }}
