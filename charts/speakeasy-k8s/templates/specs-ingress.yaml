@@ -1,5 +1,5 @@
 {{- if and .Values.registry.ingress.enabled (gt (len .Values.registry.ingress.specsHostnames) 0) (gt (len .Values.registry.ingress.webHostnames) 0) (gt (len .Values.registry.ingress.apiHostnames) 0) }}
-{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "specs-service" -}}
+{{- $serviceName := printf "%s-%s" (include "speakeasy-registry.fullname" .) "service" -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -18,17 +18,14 @@ metadata:
           local orgSlug = matches["orgSlug"]
           local workspaceSlug = matches["workspaceSlug"]
           local imageRef = matches["imageRef"]
-          {{- with (first .Values.registry.ingress.apiHostnames) }}
-          return "https://{{ . }}/v1/public/" .. orgSlug .. "/" .. workspaceSlug .. "/" .. imageRef
-          {{- end }}
+          return "/v1/public/" .. orgSlug .. "/" .. workspaceSlug .. "/" .. imageRef
         end
 
-        {{- with (first .Values.registry.ingress.webHostnames) }}
-        return "https://{{ . }}/"
-        {{- end }}
+        return "/v1/"
       }
 
-      rewrite "^/(.*)$" $resourcePath redirect;
+      proxy_set_header X-Original-URI $resourcePath;
+      rewrite .* $resourcePath break;
   labels:
     app.kubernetes.io/name: {{ printf "%s-%s" (include "speakeasy-registry.fullname" .) "specs-ingress" }}
 spec:
